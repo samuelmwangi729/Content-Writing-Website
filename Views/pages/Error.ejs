@@ -1,1 +1,20 @@
-error!!!page not found
+<!doctype html>
+<html class="no-js" lang="zxx">
+   <%- include('./partials/header.ejs')%>
+   <body>
+     <%- include('./partials/navbar.ejs') %>
+     <section class="mb-5">
+        <div class="container">
+           <div class="error-page">
+              <div class="error-content">
+                 <div class="error-img"><img src="assets/img/normal/error.svg" alt="404 image"></div>
+                 <h2 class="error-title"><span class="text-theme">OooPs!</span> Page Not Found</h2>
+                 <p class="error-text">Oops! The page you are looking for does not exist. It might have been moved or deleted.</p>
+                 <a href="/" class="th-btn">Back To Home</a>
+              </div>
+           </div>
+        </div>
+     </section>
+      <%- include('./partials/footer.ejs') %>
+   </body>
+</html>
