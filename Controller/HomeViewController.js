@@ -34,4 +34,16 @@ const Contact = (req,res)=>{
     title='Contact Us'
     res.render('pages/Contact.ejs',{title:title})
 }
-module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact}
+const Register =(req,res)=>{
+    title = 'Register Your Account'
+    res.render('pages/Register.ejs',{title:title})
+}
+const Login =(req,res)=>{
+    title = 'Login Your Account'
+    res.render('pages/Login.ejs',{title:title})
+}
+const Reset =(req,res)=>{
+    title = 'Reset Your Account\'s Password'
+    res.render('pages/Reset.ejs',{title:title})
+}
+module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset}
