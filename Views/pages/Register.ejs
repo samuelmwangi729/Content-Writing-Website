@@ -1,0 +1,78 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+   <%- include('./partials/header.ejs')%>
+   <body>
+     <%- include('./partials/navbar.ejs') %>
+     <section class="bg-title position-relative mb-5" data-bg-src="assets/img/bg/admission-bg1.png">
+        <div class="img-left admission-thumb"><img src="assets/img/normal/admission-mockup-thumb1.png" alt="mockup"></div>
+        <div class="container space z-index-common">
+           <div class="row justify-content-end">
+              <div class="col-xl-6">
+                 <div class="title-area mb-30">
+                    <span class="sub-title"><i class="fal fa-book me-2"></i> Join Us</span>
+                    <h2 class="sec-title fw-medium text-white">Get the Best When You Register With Us</h2>
+                 </div>
+                 <p class="mb-30 text-light">
+                    By creating an Account with us, It means that you accept our <a href="#">Terms and Conditions</a>
+                </p>
+                 <form class="course-form mb-2" action="#">
+                    <div class="row">
+                       <div class="col-md-6">
+                          <div class="form-group"><input type="text" placeholder="First Name" name="firstName"></div>
+                       </div>
+                       <div class="col-md-6">
+                          <div class="form-group"><input type="text" placeholder="Last Name" name="lastName"></div>
+                       </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group"><input type="email" name="email"  placeholder="Email Address"></div>
+                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group text-white text-center" style="border:1px solid #283752;border-radius: 5px;">
+                                <span class="text-center text-white">Why Join Us?</span>
+                                <div class="d-flex justify-content-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="why" id="work" value="work" >
+                                        <label class="form-check-label text-white" for="work">
+                                          I want to Work
+                                        </label>
+                                      </div>
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="why" id="exampleRadios2" value="option2">
+                                        <label class="form-check-label text-white" for="exampleRadios2">
+                                          Second default radio
+                                        </label>
+                                      </div>
+                                </div>
+                          </div>
+                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                           <div class="form-group"><input type="password" placeholder="Password" name="password"></div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group"><input type="password" placeholder="Confirm Password" name="confirmPassword"></div>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-12">
+                            <button class="th-btn style3 btn-block" style="width: 100% !important;">Create Account<i class="fas fa-arrow-right ms-2"></i></button>
+                         </div>
+                    </div>
+                 </form>
+                 <div class="row">
+                    <div class="col-md-12">
+                        <a href="/Login" class="text-white">Already Have An Account? Login</a>
+                     </div>
+                </div>
+              </div>
+           </div>
+        </div>
+     </section>
+      <%- include('./partials/footer.ejs') %>
+   </body>
+</html>
