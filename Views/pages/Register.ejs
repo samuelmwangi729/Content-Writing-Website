@@ -15,9 +15,10 @@
                  <p class="mb-30 text-light">
                     By creating an Account with us, It means that you accept our <a href="#">Terms and Conditions</a>
                 </p>
-                 <form class="course-form mb-2 registerForm" action="#">
-                  <span class="text-error text-center regError"></span>
+                 <form class="course-form mb-2 registerForm">
                     <div class="row">
+                       <span class="text-error text-center regError"></span>
+                       <span class="text-success text-center regSuccess"></span>
                        <div class="col-md-6 text-center">
                           <div class="form-group">
                            <input type="text" placeholder="First Name" name="firstName" id="firstName">
@@ -37,18 +38,18 @@
                             <div class="form-group text-white text-center" id="why" style="border:1px solid #283752;border-radius: 5px;">
                                 <span class="text-center text-white">Why Join Us?</span>
                                 <div class="d-flex justify-content-center">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="why" id="work" value="work" >
-                                        <label class="form-check-label text-white" for="work">
-                                          I want to Work
-                                        </label>
-                                      </div>
-                                      <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="why" id="hire" value="hire">
-                                        <label class="form-check-label text-white" for="hire">
-                                          I want to Hire
-                                        </label>
-                                      </div>
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="why" id="hire" value="hire" checked>
+                                    <label class="form-check-label text-white" for="hire">
+                                      I want to Hire
+                                    </label>
+                                  </div>
+                                 <div class="form-check">
+                                       <input class="form-check-input" type="radio" name="why" id="work" value="work" >
+                                       <label class="form-check-label text-white" for="work">
+                                       I want to Work
+                                       </label>
+                                    </div>
                                 </div>
                           </div>
                          </div>
@@ -63,7 +64,7 @@
                      </div>
                      <div class="row">
                         <div class="col-md-12">
-                            <button class="th-btn style3 btn-block" style="width: 100% !important;">Create Account<i class="fas fa-arrow-right ms-2"></i></button>
+                            <button class="th-btn style3 btn-block" type="submit" style="width: 100% !important;">Create Account<i class="fas fa-arrow-right ms-2"></i></button>
                          </div>
                     </div>
                  </form>
@@ -80,18 +81,52 @@
       //get the form selector
       const form = document.querySelector('form.registerForm')
       const errorClass = document.querySelector('.regError')
-      form.addEventListener('submit',(e)=>{
-         const fError = document.querySelector('#firstName')
+      const successClass = document.querySelector('.regSuccess')
+      form.addEventListener('submit', async (e)=>{
          const firstName = form.firstName.value
          const lastName = form.lastName.value
          const userEmail = form.Email.value
          const userReason = form.why.value
          const password = form.password.value
          const confirmPassword = form.confirmPassword.value
+         errorClass.textContent=""
          //prevent the default form action
-         e.preventDefault()
-         //validation to be done on the server
+         e.preventDefault();
          //post the json data to the backend using fetch API
+         const res = await fetch("/Register",{
+            method:'POST',
+            body:JSON.stringify({
+               firstName,lastName,userEmail,userReason,password,confirmPassword
+            }),
+            headers:{
+               'Content-Type':'application/json'
+            }
+         })
+         //get the response 
+         const dataBack = await res.json()
+         if(dataBack.errors){
+            Object.values(dataBack.errors).reverse().forEach((item)=>{
+            if(item.email){
+               errorClass.textContent=item.email
+            }
+            if(item.firstName){
+               errorClass.textContent=item.firstName
+            }
+            if(item.lastName){
+               errorClass.textContent=item.lastName
+            }
+            if(item.password){
+               errorClass.textContent=item.password
+            }
+            if(item.success){
+               successClass.textContent="User Successfully Registered. Redirecting...."
+               setTimeout(()=>{
+                  window.location.href = item.path
+               },5000)
+            }
+         })
+         }
+         
       })
      </script>
       <%- include('./partials/footer.ejs') %>

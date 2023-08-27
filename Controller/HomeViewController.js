@@ -1,6 +1,6 @@
-//set the title variable to global
-//change the value later
+const userModel = require('../Models/Users')
 let title = ''
+let errors=[]
 //the index page 
 const Index = (req,res)=>{
     title='HomePage'
@@ -46,4 +46,92 @@ const Reset =(req,res)=>{
     title = 'Reset Your Account\'s Password'
     res.render('pages/Reset.ejs',{title:title})
 }
-module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset}
+
+const RegisterUser = async (req,res)=>{
+    errors=[]
+    let  data={}
+    //validate the data bafore they are saved to the database
+    firstname = await userModel.cleanInput(req.body.firstName)
+    lastname = await userModel.cleanInput(req.body.lastName)
+    if(req.body.password !== req.body.confirmPassword){
+        //password do not match 
+       let  data = {
+            'password':'Password Do not Match'
+        }
+        errors.push(data)
+    }
+    if(req.body.password==""){
+        //password do not match 
+       let  data = {
+            'password':'Password Cannot be Empty'
+        }
+        errors.push(data)
+    }
+    if(req.body.userEmail==""){
+        data={
+            'email':'Email is Required'
+        }
+        errors.push(data)
+    }
+    if(req.body.firstName==""){
+        data={
+            'firstName':'First Name is Required'
+        }
+        errors.push(data)
+    }
+    if(req.body.lastName==""){
+        data={
+            'lastName':'LastName is Required'
+        }
+        errors.push(data)
+    }
+    if(errors.length == 0){
+        //attempt to store them in the database
+        try{
+            const user = await userModel.create({
+                firstName:firstname,
+                lastName:lastname,
+                email:req.body.userEmail,
+                regReason:req.body.userReason,
+                password:req.body.password,
+            })
+            if(user){
+                data={
+                    success:'user successfullt registered',
+                    path:'/Login'
+                }
+                errors.push(data)
+                res.json({errors:errors})
+            }else{
+                data={
+                    'data':'Could not create user'
+                }
+                errors.push(data)
+                res.json({errors:errors})
+            }
+        }catch(e){
+            if(e.code){
+                data={
+                    email:'Use a different Email'
+                }
+                errors.push(data)
+                res.json({errors:errors})
+            }else{
+                if(e.message.includes('validation failed')){
+                    Object.values(e.errors).forEach(({properties})=>{
+                        if(properties.path.includes('password')){
+                            data ={
+                                password:`Password::${properties.message}`
+                            }
+                        }
+                        errors.push(data)
+                    })
+                }
+                res.json({errors:errors})
+            }
+        }
+    }else{
+        res.json({errors:errors})
+    }
+}
+module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser}
