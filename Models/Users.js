@@ -47,11 +47,22 @@ const userSchema = mongoose.Schema({
     },
 },{timestamps:true})
 userSchema.statics.cleanInput= async (item)=>{
-    //clean the input here
     const cleanItem = escape(item)
     return cleanItem
 }
-//hash the password and store to the database
+userSchema.statics.Login= async (username,password)=>{
+    const user = await userModel.findOne({email:username})
+    if(user){
+        const passMatch =  await bcrypt.compare(password,user.password)
+        if(passMatch){
+            return true
+        }else{
+            return false
+        }
+    }else{
+        return false
+    }
+}
 userSchema.pre('save',async function(next){
     const salt = await bcrypt.genSalt()
     this.password = await bcrypt.hash(this.password,salt)

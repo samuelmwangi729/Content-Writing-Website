@@ -126,12 +126,43 @@ const RegisterUser = async (req,res)=>{
                         }
                         errors.push(data)
                     })
+                }else{
+                    res.json({errors:errors})
                 }
-                res.json({errors:errors})
             }
         }
     }else{
         res.json({errors:errors})
     }
 }
-module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser}
+const LoginUser= async (req,res)=>{
+    //load the json body here 
+    let errors=[]
+    let data={}
+    const {userEmail,password} = req.body
+    //check if the username and the passwords are keyed in
+    if(userEmail==""){
+        data ={
+            email:'Email Can\'t be Blank'
+        }
+        errors.push(data)
+    }
+    if(password==""){
+        data ={
+            password:'Password Can\'t be Blank'
+        }
+        errors.push(data)
+    }
+    if(userEmail && password){
+        //then means that the users form fields are not blank
+        const user = await userModel.Login(userEmail,password)
+        if(user){
+            res.json({'login':'success'})
+        }else{
+            res.json({'login':'Invalid Details Submitted'})
+        }
+    }else{
+        res.json({errors})
+    }
+}
+module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser}

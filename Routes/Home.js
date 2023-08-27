@@ -1,6 +1,6 @@
 const express = require('express')
 const {Index,
-    About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser} = require('../Controller/HomeViewController')
+    About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser} = require('../Controller/HomeViewController')
 const homeRoute = express.Router()
 
 homeRoute.get("/",Index)
@@ -15,4 +15,5 @@ homeRoute.get("/",Index)
 .get('/Login',Login)
 .get('/Reset',Reset)
 .post('/Register',RegisterUser)
+.post('/Login',LoginUser)
 module.exports = homeRoute
