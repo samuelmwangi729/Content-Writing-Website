@@ -1,6 +1,7 @@
 const express = require('express')
 const homeRoutes = require('./Routes/Home')
 const cookieParser = require('cookie-parser')
+const {getUser} = require('./Middlewares/AuthMiddleware')
 const connDb = require('./Database')
  const app = express()
 
@@ -12,6 +13,7 @@ const connDb = require('./Database')
 app.use(express.urlencoded({extended:true}))
  app.set('view engine','ejs')
  app.set('views','Views') 
+ app.get('*',getUser)
  app.use(homeRoutes)
  app.use((req,res)=>{
     res.render('pages/Error.ejs',{title:'Error!!!Page Not Found'})

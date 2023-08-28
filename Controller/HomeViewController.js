@@ -178,6 +178,11 @@ const generateJwt = (uniqueKey)=>{
 }
 const Dashboard =(req,res)=>{
     title="Dashboard"
-    res.render('pages/Dashboard.ejs',{title:title})
+    res.render('Dashboard.ejs',{title:title})
 }
-module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser,Dashboard}
+const Logout = (req,res)=>{
+    //reassign the jwt 
+    res.cookie('jwt','',{maxAge:1})
+    res.redirect('/Login')
+}
+module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser,Dashboard,Logout}
