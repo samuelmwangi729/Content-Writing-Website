@@ -2,10 +2,9 @@ const token = require('jsonwebtoken')
 
 const checkAuth = (req,res,next)=>{
     //first check if the token exists
-    const uToken = req.cookie.jwt
-    console.log(req.cookie)
+    const uToken = req.cookies.jwt
     //confirm if the token is there 
-    if(req.cookie.jwt){
+    if(req.cookies.jwt){
         //then verify the token
         token.verify(uToken,'P!@#four5sam',(err,dToken)=>{
             if(err){

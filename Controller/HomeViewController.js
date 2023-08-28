@@ -1,11 +1,9 @@
 const userModel = require('../Models/Users')
 const token = require('jsonwebtoken')
-const cookie = require('cookie-parser')
 let title = ''
 let errors=[]
 //the index page 
 const Index = (req,res)=>{
-    res.cookie('jwt',true,{httpOnly:true,maxAge:3*24*60*60*1000})
     title='HomePage'
     res.render('Index.ejs',{title:title})
 }
