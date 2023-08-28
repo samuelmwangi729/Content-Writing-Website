@@ -1,6 +1,7 @@
 const express = require('express')
+const {checkAuth} = require('../Middlewares/AuthMiddleware')
 const {Index,
-    About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser} = require('../Controller/HomeViewController')
+    About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser,Dashboard} = require('../Controller/HomeViewController')
 const homeRoute = express.Router()
 
 homeRoute.get("/",Index)
@@ -14,6 +15,7 @@ homeRoute.get("/",Index)
 .get('/Register',Register)
 .get('/Login',Login)
 .get('/Reset',Reset)
+.get('/Dashboard',checkAuth,Dashboard)
 .post('/Register',RegisterUser)
 .post('/Login',LoginUser)
 module.exports = homeRoute

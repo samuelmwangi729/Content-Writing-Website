@@ -1,10 +1,12 @@
 const express = require('express')
 const homeRoutes = require('./Routes/Home')
+const cookieParser = require('cookie-parser')
 const connDb = require('./Database')
  const app = express()
 
  app.listen(8080)
  connDb()
+ app.use(cookieParser())
  app.use(express.static('Resources'))
  app.use(express.json())
 app.use(express.urlencoded({extended:true}))

@@ -63,6 +63,12 @@ userSchema.statics.Login= async (username,password)=>{
         return false
     }
 }
+userSchema.statics.getUID = async (username)=>{
+    const user = await userModel.findOne({email:username})
+        const splittedString = (user._id).toString().split("\"")
+        let userId=splittedString[0]
+    return userId
+}
 userSchema.pre('save',async function(next){
     const salt = await bcrypt.genSalt()
     this.password = await bcrypt.hash(this.password,salt)

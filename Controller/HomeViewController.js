@@ -1,8 +1,11 @@
 const userModel = require('../Models/Users')
+const token = require('jsonwebtoken')
+const cookie = require('cookie-parser')
 let title = ''
 let errors=[]
 //the index page 
 const Index = (req,res)=>{
+    res.cookie('jwt',true,{httpOnly:true,maxAge:3*24*60*60*1000})
     title='HomePage'
     res.render('Index.ejs',{title:title})
 }
@@ -156,8 +159,13 @@ const LoginUser= async (req,res)=>{
     if(userEmail && password){
         //then means that the users form fields are not blank
         const user = await userModel.Login(userEmail,password)
+        const userId = await userModel.getUID(userEmail)
         if(user){
-            res.json({'login':'success'})
+            //login successful
+            //set the cookie here
+            const userToken = generateJwt(userId)
+            res.cookie('jwt',userToken,{httpOnly:true,maxAge:3*24*60*60*1000})
+            res.status(200).json({'login':'success'})
         }else{
             res.json({'login':'Invalid Details Submitted'})
         }
@@ -165,4 +173,13 @@ const LoginUser= async (req,res)=>{
         res.json({errors})
     }
 }
-module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser}
+const generateJwt = (uniqueKey)=>{
+    const tExpiry = 3*24*60*60
+    const jwtoken = token.sign({uniqueKey},'P!@#four5sam',{expiresIn:tExpiry})
+    return jwtoken
+}
+const Dashboard =(req,res)=>{
+    title="Dashboard"
+    res.render('pages/Dashboard.ejs',{title:title})
+}
+module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser,Dashboard}
