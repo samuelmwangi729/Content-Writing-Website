@@ -9,7 +9,7 @@
                     <div class="col-lg-8 p-r-0 title-margin-right">
                         <div class="page-header">
                             <div class="page-title">
-                                <h1>Hello, <span>Welcome Here</span></h1>
+                                <h1>Hello, <span><%= user.firstName%></span></h1>
                             </div>
                         </div>
                     </div>
@@ -33,13 +33,12 @@
                             <div class="card">
                                 <div class="stat-widget-eight">
                                     <div class="stat-header">
-                                        <div class="header-title pull-left">Daily Visit</div>
+                                        <div class="header-title pull-left">Projects</div>
                                         <div class="card-option drop-menu pull-right"><i class="ti ti-more-alt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" role="link"></i>
                                             <ul class="card-option-dropdown dropdown-menu">
-                                                <li><a href="#"><i class="ti ti-loop"></i> Update data</a></li>
-                                                <li><a href="#"><i class="ti ti-menu-alt"></i> Detail log</a></li>
-                                                <li><a href="#"><i class="ti ti-pulse"></i> Statistics</a></li>
-                                                <li><a href="#"><i class="ti ti-power-off"></i> Clear ist</a></li>
+                                                <li><a href="#"><i class="ti ti-loop"></i> Create A Project</a></li>
+                                                <li><a href="#"><i class="ti ti-menu-alt"></i> Complete Projec</a></li>
+                                                <li><a href="#"><i class="ti ti-pulse"></i> All Projects</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -47,16 +46,10 @@
                                     <div class="stat-content">
                                         <div class="pull-left">
                                             <i class="ti ti-arrow-up color-success"></i>
-                                            <span class="stat-digit"> 14,2158.35</span>
+                                            <span class="stat-digit">0</span>
                                         </div>
                                         <div class="pull-right">
-                                            <span class="progress-stats">70%</span>
-                                        </div>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-primary w-70" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-                                            <span class="sr-only">70% Complete</span>
+                                            <span class="progress-stats">Your Projects</span>
                                         </div>
                                     </div>
                                 </div>
@@ -66,13 +59,36 @@
                             <div class="card">
                                 <div class="stat-widget-eight">
                                     <div class="stat-header">
-                                        <div class="header-title pull-left">Bounce Rate</div>
+                                        <div class="header-title pull-left">Earnings</div>
                                         <div class="card-option drop-menu pull-right"><i class="ti ti-more-alt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" role="link"></i>
                                             <ul class="card-option-dropdown dropdown-menu">
-                                                <li><a href="#"><i class="ti ti-loop"></i> Update data</a></li>
-                                                <li><a href="#"><i class="ti ti-menu-alt"></i> Detail log</a></li>
-                                                <li><a href="#"><i class="ti ti-pulse"></i> Statistics</a></li>
-                                                <li><a href="#"><i class="ti ti-power-off"></i> Clear ist</a></li>
+                                                <li><a href="#"><i class="ti ti-loop"></i> Check Earnings</a></li>
+                                                <li><a href="#"><i class="ti ti-menu-alt"></i>Earning Report</a></li>
+                                                <li><a href="#"><i class="ti ti-pulse"></i> Payment Address</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="stat-content">
+                                        <div class="pull-left">
+                                            <i class="ti ti-bar-chart color-success"></i>
+                                            <span class="stat-digit">14000</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card">
+                                <div class="stat-widget-eight">
+                                    <div class="stat-header">
+                                        <div class="header-title pull-left">Payouts</div>
+                                        <div class="card-option drop-menu pull-right"><i class="ti ti-more-alt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" role="link"></i>
+                                            <ul class="card-option-dropdown dropdown-menu">
+                                                <li><a href="#"><i class="ti ti-loop"></i> View Report</a></li>
+                                                <li><a href="#"><i class="ti ti-menu-alt"></i> View Pending Transactions</a></li>
+                                                <li><a href="#"><i class="ti ti-menu-alt"></i> Update Payment Address</a></li>
+                                                <li><a href="#"><i class="ti ti-pulse"></i> All Payouts</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -80,16 +96,7 @@
                                     <div class="stat-content">
                                         <div class="pull-left">
                                             <i class="ti ti-arrow-up color-success"></i>
-                                            <span class="stat-digit"> 14,2158.35</span>
-                                        </div>
-                                        <div class="pull-right">
-                                            <span class="progress-stats">70%</span>
-                                        </div>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-success w-70" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-                                            <span class="sr-only">70% Complete</span>
+                                            <span class="stat-digit"> 5 ,000</span>
                                         </div>
                                     </div>
                                 </div>
@@ -99,63 +106,20 @@
                             <div class="card">
                                 <div class="stat-widget-eight">
                                     <div class="stat-header">
-                                        <div class="header-title pull-left">Growth Rate</div>
+                                        <div class="header-title pull-left">Orders</div>
                                         <div class="card-option drop-menu pull-right"><i class="ti ti-more-alt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" role="link"></i>
                                             <ul class="card-option-dropdown dropdown-menu">
-                                                <li><a href="#"><i class="ti ti-loop"></i> Update data</a></li>
-                                                <li><a href="#"><i class="ti ti-menu-alt"></i> Detail log</a></li>
-                                                <li><a href="#"><i class="ti ti-pulse"></i> Statistics</a></li>
-                                                <li><a href="#"><i class="ti ti-power-off"></i> Clear ist</a></li>
+                                                <li><a href="#"><i class="ti ti-loop"></i> All Orders</a></li>
+                                                <li><a href="#"><i class="ti ti-menu-alt"></i> Complete Orders</a></li>
+                                                <li><a href="#"><i class="ti ti-pulse"></i> Dispute Order</a></li>
                                             </ul>
                                         </div>
                                     </div>
                                     <div class="clearfix"></div>
                                     <div class="stat-content">
                                         <div class="pull-left">
-                                            <i class="ti ti-arrow-down color-danger"></i>
-                                            <span class="stat-digit"> 14,2158.35</span>
-                                        </div>
-                                        <div class="pull-right">
-                                            <span class="progress-stats">70%</span>
-                                        </div>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-warning w-70" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-                                            <span class="sr-only">70% Complete</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="card">
-                                <div class="stat-widget-eight">
-                                    <div class="stat-header">
-                                        <div class="header-title pull-left">Page Views</div>
-                                        <div class="card-option drop-menu pull-right"><i class="ti ti-more-alt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" role="link"></i>
-                                            <ul class="card-option-dropdown dropdown-menu">
-                                                <li><a href="#"><i class="ti ti-loop"></i> Update data</a></li>
-                                                <li><a href="#"><i class="ti ti-menu-alt"></i> Detail log</a></li>
-                                                <li><a href="#"><i class="ti ti-pulse"></i> Statistics</a></li>
-                                                <li><a href="#"><i class="ti ti-power-off"></i> Clear ist</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <div class="stat-content">
-                                        <div class="pull-left">
-                                            <i class="ti ti-arrow-down color-danger"></i>
-                                            <span class="stat-digit"> 14,2158.35</span>
-                                        </div>
-                                        <div class="pull-right">
-                                            <span class="progress-stats">70%</span>
-                                        </div>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-success w-70" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-                                            <span class="sr-only">70% Complete</span>
+                                            <i class="ti ti-arrow-up color-danger"></i>
+                                            <span class="stat-digit"> 20</span>
                                         </div>
                                     </div>
                                 </div>

@@ -51,8 +51,13 @@
                       <li>
                          <div class="header-social"><a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a> <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a> <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a> <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a> <a href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a></div>
                       </li>
+                      <% if(user){%>
+                      <li><a href="/Dashboard">My Account</a></li>
+                      <li><a href="/Logout">Log out</a></li>
+                      <% }else{%>
                       <li><a href="/Register">Register</a></li>
                       <li><a href="/Login">Login</a></li>
+                      <%}%>
                    </ul>
                 </div>
              </div>
