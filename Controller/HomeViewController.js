@@ -1,5 +1,7 @@
 const userModel = require('../Models/Users')
 const token = require('jsonwebtoken')
+const geoip = require('geoip-lite')
+const LoginLog = require('../Models/LoginSessions')
 let title = ''
 let errors=[]
 //the index page 
@@ -160,9 +162,15 @@ const LoginUser= async (req,res)=>{
         const userId = await userModel.getUID(userEmail)
         if(user){
             //login successful
+            var ip = req.headers['x-forwarded-for'] ||
+            req.socket.remoteAddress ||
+            null;
+            const userPlatform=req.headers['sec-ch-ua-platform']
+            LogUser('197.156.144.178',userPlatform,userEmail)
             //set the cookie here
             const userToken = generateJwt(userId)
             res.cookie('jwt',userToken,{httpOnly:true,maxAge:3*24*60*60*1000})
+            //save the details to the database with the username,ip address, device and timestamp
             res.status(200).json({'login':'success'})
         }else{
             res.json({'login':'Invalid Details Submitted'})
@@ -176,10 +184,34 @@ const generateJwt = (uniqueKey)=>{
     const jwtoken = token.sign({uniqueKey},'P!@#four5sam',{expiresIn:tExpiry})
     return jwtoken
 }
+const LogUser = async (ipAddress,platform,email) =>{
+    let {range,country,region,timezone,city,ll,area} = geoip.lookup(ipAddress)
+    try {
+        const userId = await userModel.getUID(email)
+        let logdts = new LoginLog({
+            userId,
+            ipAddress,
+            range,
+            country,
+            region,
+            city,
+            timezone,
+            ll,
+            area,
+            platform
+        })
+        const userdts = await logdts.save()
+        console.log(userdts)
+    } catch (error) {
+        console.log(error.message)
+    }
+    
+} 
 const Dashboard =(req,res)=>{
     title="Dashboard"
     res.render('Dashboard.ejs',{title:title})
 }
+
 const Logout = (req,res)=>{
     //reassign the jwt 
     res.cookie('jwt','',{maxAge:1})

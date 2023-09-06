@@ -1,11 +1,13 @@
 const express = require('express')
 const homeRoutes = require('./Routes/Home')
 const cookieParser = require('cookie-parser')
+const device = require('express-device')
 const {getUser} = require('./Middlewares/AuthMiddleware')
 const connDb = require('./Database')
  const app = express()
-
+ app.use(device.capture());
  app.listen(8080)
+ app.set('trust proxy', true)
  connDb()
  app.use(cookieParser())
  app.use(express.static('Resources'))
