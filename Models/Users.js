@@ -28,23 +28,19 @@ const userSchema = mongoose.Schema({
         required:[true,'Minimum length is 8'],
         minlength:[8,'The minimum length is 8 characters']
     },
-    isStaff:{
-        type:Boolean,
-        default:false
-    },
-    isAdmin:{
-        type:Boolean,
-        default:false,
-    },
     useLevel:{
-        type:Number,
-        default:0
+        enum:['user','Staff'],
+        default:'user'
     },
-    userStatus:{
-        type:Number,
+    accountStatus:{
+        enum:['Active','Dormant','Unverified'],
         required:true,
         default:1
     },
+    userRole:{
+        enum:['Client','Writer','Administrator'],
+        default:'Client'
+    }
 },{timestamps:true})
 userSchema.statics.cleanInput= async (item)=>{
     const cleanItem = escape(item)
