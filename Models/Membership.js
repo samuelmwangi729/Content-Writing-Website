@@ -21,4 +21,4 @@ const MembershipSchema =  new Schema({
 },{timestamps:true})
 //compile to models 
 const Membership = model('Membership',MembershipSchema)
-modules.export = Membership
+modules.exports = Membership
