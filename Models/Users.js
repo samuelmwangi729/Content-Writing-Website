@@ -29,15 +29,18 @@ const userSchema = mongoose.Schema({
         minlength:[8,'The minimum length is 8 characters']
     },
     useLevel:{
+        type:String,
         enum:['user','Staff'],
         default:'user'
     },
     accountStatus:{
+        type:String,
         enum:['Active','Dormant','Unverified'],
         required:true,
-        default:1
+        default:'Unverified'
     },
     userRole:{
+        type:String,
         enum:['Client','Writer','Administrator'],
         default:'Client'
     }
@@ -70,5 +73,5 @@ userSchema.pre('save',async function(next){
     this.password = await bcrypt.hash(this.password,salt)
     next()
 })
-const userModel = mongoose.model('userModel',userSchema)
-module.exports = userModel
+const User = mongoose.model('userModel',userSchema)
+module.exports = User

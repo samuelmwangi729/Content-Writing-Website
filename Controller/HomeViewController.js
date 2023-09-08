@@ -201,7 +201,6 @@ const LogUser = async (ipAddress,platform,email) =>{
             platform
         })
         const userdts = await logdts.save()
-        console.log(userdts)
     } catch (error) {
         console.log(error.message)
     }
