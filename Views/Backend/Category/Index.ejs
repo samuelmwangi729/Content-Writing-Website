@@ -1,0 +1,69 @@
+<%- include('../partials/header.ejs') %>
+<body>
+<%- include('../partials/sidebar.ejs') %>
+<%- include('../partials/navbar.ejs') %>
+<div class="content-wrap">
+    <div class="main">
+        <div class="container-fluid">
+            <!-- content goes here  -->
+            <div class="unix-login">
+                <div class="container-fluid">
+                    <div class="row text-center">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <div class="login-content">
+                                <div class="login-form">
+                                    <h4>Create Categories</h4>
+                                    <form id="categoryForm">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <span>sdhjhjsa</span>
+                                                    <label>Category Name</label>
+                                                    <input type="text" class="form-control" name="catName" placeholder="Name of Category eg. IT">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Category Type</label>
+                                                    <select name="CategoryType" id="Category" class="form-control">
+                                                        <option label="--Select Category"></option>
+                                                        <option value="Content">Content</option>
+                                                        <option value="Skills">Skills</option>
+                                                        <option value="Blog">Blog</option>
+                                                        <option value="Others">Others</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">Post Category</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const form = document.querySelector('form#categoryForm')
+    form.addEventListener('submit', async (event)=>{
+        event.preventDefault();
+        const catName = form.catName.value
+        const CategoryType = form.CategoryType.value
+        const res = await fetch("/Categories/Add",{
+            method:'POST',
+            body:JSON.stringify({catName,CategoryType}),
+            headers:{
+               'Content-Type':'application/json'
+            }
+         })
+         const dataBack = await res.json()
+         console.log(dataBack)
+    })
+</script>
+<%- include('../partials/scripts.ejs') %>
+</body>
+
+</html> 

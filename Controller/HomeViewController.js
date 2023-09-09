@@ -42,6 +42,9 @@ const Register =(req,res)=>{
     res.render('pages/Register.ejs',{title:title})
 }
 const Login =(req,res)=>{
+     if(req.cookies.jwt){
+        res.redirect('/Dashboard')
+    }
     title = 'Login Your Account'
     res.render('pages/Login.ejs',{title:title})
 }

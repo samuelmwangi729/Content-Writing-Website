@@ -50,7 +50,7 @@ userSchema.statics.cleanInput= async (item)=>{
     return cleanItem
 }
 userSchema.statics.Login= async (username,password)=>{
-    const user = await userModel.findOne({email:username})
+    const user = await User.findOne({email:username})
     if(user){
         const passMatch =  await bcrypt.compare(password,user.password)
         if(passMatch){
@@ -63,7 +63,7 @@ userSchema.statics.Login= async (username,password)=>{
     }
 }
 userSchema.statics.getUID = async (username)=>{
-    const user = await userModel.findOne({email:username})
+    const user = await User.findOne({email:username})
         const splittedString = (user._id).toString().split("\"")
         let userId=splittedString[0]
     return userId

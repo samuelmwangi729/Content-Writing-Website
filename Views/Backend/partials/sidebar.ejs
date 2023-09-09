@@ -5,10 +5,18 @@
                 <li class="label">Dashboard</li>
                 <li class="active"><a class="sidebar-sub-toggle">Welcome <%= user.firstName%><span class="sidebar-collapse-icon"></span></a>
                 </li>
+                <li class="label">Categories</li>
+                <li><a class="sidebar-sub-toggle"><i class="ti ti-pencil-alt"></i>My Categories<span class="sidebar-collapse-icon ti ti-angle-down"></span></a>
+                    <ul>
+                        <li><a href="/CategoryCreate">Add Categories</a></li>
+                        <li><a href="school-student-profile.html">Completed Orders</a></li>
+                        <li><a href="school-student-details.html">All Orders</a></li>
+                    </ul>
+                </li>
                 <li class="label">Orders</li>
                 <li><a class="sidebar-sub-toggle"><i class="ti ti-pencil-alt"></i>My Orders <span class="sidebar-collapse-icon ti ti-angle-down"></span></a>
                     <ul>
-                        <li><a href="school-student.html">Create Order</a></li>
+                        <li><a href="/OrderCreate">Create Order</a></li>
                         <li><a href="school-student-profile.html">Completed Orders</a></li>
                         <li><a href="school-student-details.html">All Orders</a></li>
                     </ul>

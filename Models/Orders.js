@@ -19,6 +19,10 @@ const OrderSchema = new Schema({
         type:String,
         default:''
     },
+    Budget:{
+        type:String,
+        default:''
+    },
     Status:{
         type:String,
         enum:['Online','Hold','Awarded','Pending','Complete','Deleted','Suspended','Revise'],
