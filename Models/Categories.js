@@ -6,6 +6,7 @@ const CategoriesSchema = mongoose.Schema({
         required:[true,'The Category Name Is Required']
     },
     CategoryType:{
+        type:String,
         enum:['Blog','Content','Skills','Others'],
         default:'Content'
     },
