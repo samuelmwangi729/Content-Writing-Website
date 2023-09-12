@@ -36,6 +36,7 @@ getUser = async (req,res,next)=>{
                 //find the user from the database 
                 const sysUser = await userModel.findById(userId)
                 const user={
+                    userId:sysUser?._id,
                     firstName:sysUser.firstName,
                     lastName:sysUser.lastName,
                     email:sysUser.email,

@@ -15,9 +15,9 @@
                                     <h4>Create Categories</h4>
                                     <form id="categoryForm">
                                         <div class="row">
+                                            <h6 class="text-danger text-center" id="errorsCategory"></h6>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <span>sdhjhjsa</span>
                                                     <label>Category Name</label>
                                                     <input type="text" class="form-control" name="catName" placeholder="Name of Category eg. IT">
                                                 </div>
@@ -48,6 +48,7 @@
 </div>
 <script>
     const form = document.querySelector('form#categoryForm')
+    const errorField = document.querySelector('h6#errorsCategory')
     form.addEventListener('submit', async (event)=>{
         event.preventDefault();
         const catName = form.catName.value
@@ -60,7 +61,14 @@
             }
          })
          const dataBack = await res.json()
-         console.log(dataBack)
+         if(dataBack.success){
+            errorField.textContent = dataBack.success.success
+            form.catName.value=''
+            form.CategoryType.value=''
+         }
+         else{
+            errorField.textContent = dataBack.errors.errors
+         }
     })
 </script>
 <%- include('../partials/scripts.ejs') %>

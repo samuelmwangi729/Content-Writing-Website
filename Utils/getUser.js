@@ -24,7 +24,7 @@ getUser = async (req,res,next)=>{
                     userLevel:sysUser?.useLevel,
                     userStatus:sysUser?.userStatus
                 }
-                return sysUser.email
+                return sysUser?._id
             }
         })
    }else{
