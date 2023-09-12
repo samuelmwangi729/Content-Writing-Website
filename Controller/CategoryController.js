@@ -1,6 +1,5 @@
 //all the controlling will be done here 
 const Category =  require('../Models/Categories')
-const getUser = require('../Utils/getUser')
 const User = require('../Models/Users')
 const Index = (req,res)=>{
     res.render('Backend/Category/Index.ejs',{title:'Create Category'})
@@ -25,4 +24,13 @@ const AddCategory = async (req,res)=>{
         res.json({errors})
     }
 }
-module.exports = {Index,AddCategory}
+//get all categories 
+const All =  async (req,res)=>{
+    //get all the categories from the database 
+    const categories = await Category.find()
+    //send the categories to the frontend 
+    res.render('Backend/Category/All.ejs',{categories:categories})
+    // res.json({categories})
+    // console.log(categories)
+}
+module.exports = {Index,AddCategory,All}

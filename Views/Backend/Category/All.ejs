@@ -1,0 +1,66 @@
+<%- include('../partials/header.ejs') %>
+<body>
+<%- include('../partials/sidebar.ejs') %>
+<%- include('../partials/navbar.ejs') %>
+<div class="content-wrap">
+    <div class="main">
+        <div class="container-fluid">
+            <!-- content goes here  -->
+            <div class="unix-login">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card alert">
+                                <div class="card-header text-center">
+                                    <h4 class="text-center">All Categories </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>S/No</th>
+                                                    <th>Category Name</th>
+                                                    <th>Category Type</th>
+                                                    <th>Created By</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% categories.forEach(function(item,key=1){%>
+                                                <tr>
+                                                    <th scope="row"><%= key %></th>
+                                                    <td><%= item.CategoryName %></td>
+                                                    <td><%= item.CategoryType %></td>
+                                                    <td>
+                                                        <span class="badge badge-primary">
+                                                            <a href="#">Edit Category</a>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-danger">
+                                                            <a href="#">Delete Category</a>
+                                                        </span>
+                                                </td>
+                                                </tr>
+                                                <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /# card -->
+                        </div>
+                        <!-- /# column -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>
+<%- include('../partials/scripts.ejs') %>
+</body>
+
+</html> 
