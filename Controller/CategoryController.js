@@ -76,4 +76,26 @@ const EditItem = async(req,res)=>{
         res.redirect('/CategoryAll')
     }
 }
-module.exports = {Index,AddCategory,All,EditItem,UpdateCategory}
+// ? delete the category from the database 
+const deleteCategory = async (req,res)=>{
+    //get the category ID from the POST method
+     //get the url params
+     let {query} = url.parse(req.url,true)
+     //escape the query string 
+     const itemId = query.itemId
+     //get the category
+     try {
+         const cat = await Category.findById(itemId)
+         if(cat){
+            //delete the category 
+            cat.deleteOne()
+            res.redirect('/CategoryAll')
+         }else{
+             res.redirect('/CategoryAll')   
+         }
+     } catch (error) {
+         //then the category is not found 
+         res.redirect('/CategoryAll')
+     }
+}
+module.exports = {Index,AddCategory,All,EditItem,UpdateCategory,deleteCategory}

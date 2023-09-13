@@ -15,10 +15,13 @@
                                     <h4>Create An Order</h4>
                                     <form id="orderForm">
                                         <div class="row">
+                                            <span class="text-center text-danger" id="errorClass"></span>
+                                        </div>
+                                        <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
                                                     <label>Title</label>
-                                                    <input type="text" class="form-control" name="title" placeholder="What do you want done?">
+                                                    <input type="text" class="form-control" name="Title" placeholder="What do you want done?">
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
@@ -26,6 +29,9 @@
                                                     <label>Category</label>
                                                     <select name="Category" id="Category" class="form-control">
                                                         <option label="--Select Category"></option>
+                                                        <% categories.forEach(function(item,index){ %>
+                                                            <option value="<%= item.CategoryName %>"> <%= item.CategoryName %> </option>
+                                                        <% }) %>
                                                     </select>
                                                 </div>
                                             </div>
@@ -75,7 +81,7 @@
                                             <div class="col-sm-6">
                                                 <div class="form-group">
                                                     <label>Deadline</label>
-                                                    <input type="date" class="form-control" placeholder="Password">
+                                                    <input type="date" class="form-control" placeholder="Deadline" name="Deadline">
                                                 </div>
                                             </div>
                                         </div>
@@ -92,9 +98,38 @@
 </div>
 <script>
     const form = document.querySelector('form#orderForm')
+    const errorClass = document.querySelector('span#errorClass')
     form.addEventListener('submit',(e)=>{
+        errorClass.textContent = ""
         e.preventDefault()
-        alert('form submitted')
+        const Title = form.Title.value
+        const Category = form.Category.value
+        const Description = form.Description.value
+        const projectType = form.projectType.value
+        const Budget = form.Budget.value
+        const ProjectFile = form.ProjectFile.value ? form.ProjectFile.value : ''
+        const Deadline = form.Deadline.value
+        if(!Title){
+            errorClass.textContent = "Title Is Required"
+        }
+        else if(!Category){
+            errorClass.textContent = "Category Is Required"
+        }
+        else if(!Description){
+            errorClass.textContent = "Description Is Required"
+        }
+        else if(!projectType){
+            errorClass.textContent = "projectType Is Required"
+        }
+        else if(!Budget){
+            errorClass.textContent = "Budget Is Required"
+        }
+        else if(!Deadline){
+            errorClass.textContent = "Deadline Is Required"
+        }
+        else{
+            errorClass.textContent = ""
+        }
     })
 </script>
 <%- include('../partials/scripts.ejs') %>
