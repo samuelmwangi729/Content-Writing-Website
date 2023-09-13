@@ -1,0 +1,77 @@
+<%- include('../partials/header.ejs') %>
+<body>
+<%- include('../partials/sidebar.ejs') %>
+<%- include('../partials/navbar.ejs') %>
+<div class="content-wrap">
+    <div class="main">
+        <div class="container-fluid">
+            <!-- content goes here  -->
+            <div class="unix-login">
+                <div class="container-fluid">
+                    <div class="row text-center">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <div class="login-content">
+                                <div class="login-form">
+                                    <h4>Edit Category</h4>
+                                    <form id="categoryForm">
+                                        <div class="row">
+                                            <h6 class="text-danger text-center" id="errorsCategory"></h6>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Category Name</label>
+                                                    <input type="hidden" class="form-control" name="catID" value="<%= categoryId %>">
+                                                    <input type="text" class="form-control" name="catName" value="<%= category.CategoryName %>">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Category Type</label>
+                                                    <select name="CategoryType" id="Category" class="form-control">
+                                                        <option label="--Select Category"></option>
+                                                        <option value="Content">Content</option>
+                                                        <option value="Skills">Skills</option>
+                                                        <option value="Blog">Blog</option>
+                                                        <option value="Others">Others</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">Update Category</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const form = document.querySelector('form#categoryForm')
+    const errorField = document.querySelector('h6#errorsCategory')
+    form.addEventListener('submit', async (event)=>{
+        event.preventDefault();
+        const catID = form.catID.value
+        const catName = form.catName.value
+        const CategoryType = form.CategoryType.value
+        const res = await fetch("/Categories/Update",{
+            method:'POST',
+            body:JSON.stringify({catID,catName,CategoryType}),
+            headers:{
+               'Content-Type':'application/json'
+            }
+         })
+         let dataBack = await res.json()
+         if(dataBack.success){
+            console.log(dataBack.success)
+            window.location.href = "/CategoryAll"
+         }else{
+            errorField.textContent = dataBack.errors
+         }
+    })
+</script>
+<%- include('../partials/scripts.ejs') %>
+</body>
+
+</html> 

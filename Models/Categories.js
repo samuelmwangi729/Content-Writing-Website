@@ -16,6 +16,9 @@ const CategoriesSchema = mongoose.Schema({
         required:[true,'The user is required']
     }
 },{timestamps:true})
+CategoriesSchema.statics.getID = async (id)=>{
+    return id.toString().split("\"")[0]
+}
 //compile the schema into models
 const Categories = mongoose.model('Categories',CategoriesSchema)
 
