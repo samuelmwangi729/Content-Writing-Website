@@ -16,11 +16,11 @@ const OrderSchema = new Schema({
         required:[true,'The Description is required'],
     },
     ProjectFile:{
-        type:String,
+        type:Array,
         default:''
     },
     Budget:{
-        type:String,
+        type:Number,
         default:''
     },
     Status:{

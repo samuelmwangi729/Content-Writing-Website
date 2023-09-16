@@ -13,7 +13,7 @@
                             <div class="login-content">
                                 <div class="login-form">
                                     <h4>Create An Order</h4>
-                                    <form id="orderForm">
+                                    <form id="orderForm" enctype="multipart/form-data">
                                         <div class="row">
                                             <span class="text-center text-danger" id="errorClass"></span>
                                         </div>
@@ -40,7 +40,7 @@
                                             <div class="col-sm-12">
                                                 <div class="form-group">
                                                     <label>Description</label>
-                                                    <textarea name="Description" id="" placeholder="Project Description"  rows="5" style="width: 100%;"></textarea>
+                                                    <textarea name="Description" id="" placeholder="Project Description"  rows="5" style="width: 100%;color:black"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -67,7 +67,7 @@
                                                 <div class="col-sm-6 text-center">
                                                     <div class="form-group">
                                                         <label>Your Budget</label>
-                                                        <input type="currency" class="form-control" name="Budget" placeholder="Amount in USD">
+                                                        <input type="number" class="form-control" name="Budget" placeholder="Amount in USD">
                                                     </div>
                                                 </div>
                                         </div>
@@ -75,7 +75,7 @@
                                             <div class="col-sm-6">
                                                 <div class="form-group">
                                                     <label>Project File</label>
-                                                    <input type="file" class="form-control" name="ProjectFile">
+                                                    <input type="file" class="form-control" id="projectFile" name="ProjectFile" multiple>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
@@ -99,7 +99,7 @@
 <script>
     const form = document.querySelector('form#orderForm')
     const errorClass = document.querySelector('span#errorClass')
-    form.addEventListener('submit',(e)=>{
+    form.addEventListener('submit', async (e)=>{
         errorClass.textContent = ""
         e.preventDefault()
         const Title = form.Title.value
@@ -107,7 +107,7 @@
         const Description = form.Description.value
         const projectType = form.projectType.value
         const Budget = form.Budget.value
-        const ProjectFile = form.ProjectFile.value ? form.ProjectFile.value : ''
+        const ProjectFiles = form.ProjectFile.files
         const Deadline = form.Deadline.value
         if(!Title){
             errorClass.textContent = "Title Is Required"
@@ -129,6 +129,25 @@
         }
         else{
             errorClass.textContent = ""
+            //initialize the form data 
+            const formData = new FormData()
+            formData.append('Title',Title)
+            formData.append('Category',Category)
+            formData.append('Description',Description)
+            formData.append('projectType',projectType)
+            formData.append('Budget',Budget)
+            formData.append('Deadline',Deadline)
+            Object.keys(ProjectFiles).forEach(key=>{
+                formData.append(ProjectFiles[key].name,ProjectFiles[key])
+            })
+            console.log(...formData)
+            const res = await fetch("/SaveOrder",{
+                method:'POST',
+                body: formData
+            })
+            const dataBack = await res.json()
+            console.log(dataBack)
+            
         }
     })
 </script>

@@ -1,10 +1,11 @@
 const express = require('express')
+const fileUpload = require('express-fileupload')
 //instantiate the express router 
 const orderRouter = express.Router()
-const {getUser} = require('../Middlewares/AuthMiddleware')
 //import the middleware 
-const checkAuth = require('../Middlewares/AuthMiddleware')
+const {checkAuth,getUser} = require('../Middlewares/AuthMiddleware')
 //import the controllers 
-const {Index} =  require('../Controller/OrderController')
+const {Index,SaveOrder} =  require('../Controller/OrderController')
 orderRouter.get("/OrderCreate",getUser,Index)
+orderRouter.post("/SaveOrder",fileUpload({createParentPath:true}),checkAuth,getUser,SaveOrder)
 module.exports = orderRouter
