@@ -1,0 +1,62 @@
+<%- include('../partials/header.ejs') %>
+<body>
+<%- include('../partials/sidebar.ejs') %>
+<%- include('../partials/navbar.ejs') %>
+<div class="content-wrap">
+    <div class="main">
+        <div class="container-fluid">
+            <!-- content goes here  -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card alert">
+                        <div class="card-header">
+                           <div class="row">
+                            <div class="col-sm-6 col-sm-offset-3">
+                                <h3 class="text-center">My Projects</h3>
+                            </div>
+                           </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Project Title</th>
+                                            <th>Type</th>
+                                            <th>Price</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% orders.forEach(item=>{ %>
+                                        <tr>
+                                            <td><%= item.Title %></td>
+                                            <td><%= item.ProjectType %></td>
+                                            <td><span class="badge badge-primary"> $<%= item.Budget %></span></td>
+                                            <td><span class="badge badge-sm badge-danger">
+                                                <%= item.Status %>
+                                            </span>
+                                            </td>
+                                            </span>
+                                            <td>
+                                                <a href="#" class="badge badge-sm badge-primary">Edit</a>
+                                                <a href="#" class="badge badge-sm badge-danger">Delete</a>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /# card -->
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/scripts.ejs') %>
+</body>
+
+</html> 

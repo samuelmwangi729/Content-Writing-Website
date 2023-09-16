@@ -54,9 +54,20 @@ const SaveOrder = async (req,res)=>{
                 SubmitBy:Deadline,
                 Client:userLoggedIn
             })
-            console.log(order)
         }
     }
 }
+const MyOrders = async (req,res)=>{
+    //get the personal orders 
+    // console.log(res.locals.user)
+    const userOBJ = await User.findOne({email:res.locals.user.email})
+    if(!userOBJ){
+        //then the user does not exist
+    }else{
+        const orders = await Order.find({Client:userOBJ})
+        res.render('Backend/Orders/Personal.ejs',{orders:orders})
+    }
+    //posted by the clients 
+}
 
-module.exports = {Index,SaveOrder}
+module.exports = {Index,SaveOrder,MyOrders}
