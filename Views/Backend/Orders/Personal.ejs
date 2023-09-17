@@ -40,8 +40,9 @@
                                             </td>
                                             </span>
                                             <td>
-                                                <a href="#" class="badge badge-sm badge-primary">Edit</a>
-                                                <a href="#" class="badge badge-sm badge-danger">Delete</a>
+                                                <span><a href="/OrderSingle?OrderID=<%= item?._id %>"><i class="ti ti-eye color-default"></i></a> </span>
+                                                <span><a href="/OrderSingle/<%= item?._id %>"><i class="ti ti-pencil-alt color-success"></i></a></span>
+                                                <span><a href="/OrderSingle/<%= item?._id %>"><i class="ti ti-trash color-danger"></i> </a></span>
                                             </td>
                                         </tr>
                                         <% }) %>

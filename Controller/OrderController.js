@@ -2,6 +2,8 @@ const Categorys = require('../Models/Categories')
 const Order = require('../Models/Orders')
 const User = require('../Models/Users')
 const path  = require('path')
+const url =  require('url')
+const moment = require('moment')
 const Index = async (req,res)=>{
     //filter out the categories that use orders only 
     categories = await Categorys.find({CategoryType:'Content'})
@@ -69,5 +71,21 @@ const MyOrders = async (req,res)=>{
     }
     //posted by the clients 
 }
+const OrderSingle = async (req,res)=>{
+    //get the query parameter 
+    const {query} = url.parse(req.url,true)
+    let orderID = query.OrderID
+    let user = await User.findOne({email:res.locals.user.email})
+    const OrderSingle = await Order.findOne({_id:orderID,Client:user})
+    if(!OrderSingle){
+        res.redirect('/MyOrders')
+    }else{
+        //get the category Name 
+        res.locals.moment = moment
+        const categoryOrder = await Categorys.findById(OrderSingle.Category)
+        const ordersDir = __dirname
+        res.render('Backend/Orders/Single.ejs',{order:OrderSingle,category:categoryOrder?.CategoryName,ordersDir:ordersDir})
+    }
+}
 
-module.exports = {Index,SaveOrder,MyOrders}
+module.exports = {Index,SaveOrder,MyOrders,OrderSingle}
