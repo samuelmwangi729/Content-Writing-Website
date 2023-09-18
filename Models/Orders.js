@@ -25,16 +25,16 @@ const OrderSchema = new Schema({
     },
     Status:{
         type:String,
-        enum:['Online','Hold','Awarded','Pending','Complete','Deleted','Suspended','Revise'],
-        default:'Online'
+        enum:['Online','Hold','Awarded','Pending','Complete','Deleted','Suspended','Revise','Withdrawn'],
+        default:'Pending'
     },
     Client:{
         type:Schema.Types.ObjectId,
         ref:User
     },
     AwardedTo:{
-        type:Schema.Types.ObjectId,
-        ref:User
+        type:String,
+        default:''
     },
     ProjectType:{
         type:String,
@@ -50,6 +50,19 @@ const OrderSchema = new Schema({
         type:Date,
     }
 },{timestamps:true})
+OrderSchema.statics.isExists = async  (orderID,userEmail)=>{
+    //import the user model 
+    console.log(userEmail)
+    //confirm if the order exists in the database 
+    const user = await User.findOne({email:userEmail})
+    const order = await Orders.findOne({_id:orderID,Client:user})
+    if(order){
+        //return true because the order exist 
+        return true
+    }else{
+        return false
+    }
+}
 
 const Orders = model('Orders',OrderSchema)
 //export the model

@@ -8,9 +8,11 @@ const {getUser, checkAuth} = require('./Middlewares/AuthMiddleware')
 const connDb = require('./Database')
  const app = express()
  app.use(device.capture());
- app.listen(8080)
+ app.listen(8080,()=>{
+   console.log('Server running on http://localhost:8080/')
+   connDb()
+ })
  app.set('trust proxy', true)
- connDb()
  app.use(cookieParser())
  app.use(express.static('Resources'))
  app.use(express.json())

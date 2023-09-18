@@ -13,6 +13,12 @@
                             <div class="login-content">
                                 <div class="login-form">
                                     <h4>Create An Order</h4>
+                                    <div class="hidden" id="hidden">
+                                        <div class="alert alert-dismissable">
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <strong id="descriptionText">Success!</strong> <span id="descriptionText"></span>
+                                        </div>
+                                    </div>
                                     <form id="orderForm" enctype="multipart/form-data">
                                         <div class="row">
                                             <span class="text-center text-danger" id="errorClass"></span>
@@ -99,6 +105,7 @@
 <script>
     const form = document.querySelector('form#orderForm')
     const errorClass = document.querySelector('span#errorClass')
+    const hiddenClass = document.querySelector("div#hidden")
     form.addEventListener('submit', async (e)=>{
         errorClass.textContent = ""
         e.preventDefault()
@@ -129,6 +136,12 @@
         }
         else{
             errorClass.textContent = ""
+            const showAlert = ()=>{
+                hiddenClass.classList.remove('hidden')
+                document.querySelector("span#descriptionText").textContent = dataBack.message
+                document.querySelector("strong#descriptionText").textContent = dataBack.success
+                document.querySelector("div.alert").classList.add('alert-success')
+            }
             //initialize the form data 
             const formData = new FormData()
             formData.append('Title',Title)
@@ -140,13 +153,22 @@
             Object.keys(ProjectFiles).forEach(key=>{
                 formData.append(ProjectFiles[key].name,ProjectFiles[key])
             })
-            console.log(...formData)
             const res = await fetch("/SaveOrder",{
                 method:'POST',
                 body: formData
             })
             const dataBack = await res.json()
-            console.log(dataBack)
+            if(dataBack.success){
+                showAlert()
+                setTimeout(()=>{
+                  window.location.href = "/MyOrders"
+               },5000)
+            }else{
+                hiddenClass.classList.remove('hidden')
+                document.querySelector("span#descriptionText").textContent = dataBack.message
+                document.querySelector("strong#descriptionText").textContent = dataBack.error
+                document.querySelector("div.alert").classList.add('alert-danger')
+            }
             
         }
     })

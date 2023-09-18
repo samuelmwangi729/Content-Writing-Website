@@ -18,14 +18,14 @@ const SaveOrder = async (req,res)=>{
     let category = await Categorys.findOne({CategoryName:Category})
     //check if category exists 
     if(!category){
-        res.status(500).json({error:'Unknown Server Error',message:'Could not create Your Order'})
+        res.status(400).json({error:'Unknown Server Error',message:'Could not create Your Order'})
     }else{
         let catID = (category?._id).toString().split("\"")[0]
         //check if the project is a duplicate 
         const ordExists = await Order.findOne({Title:Title})
         console.log(ordExists)
         if(ordExists){
-            console.log('Duplicate Project Posted')
+            res.status(400).json({error:'error',message:'An Order Similar to this One Has Already Been Posted'})
         }else{
             //check if the request has files
             if(req.files){
@@ -56,6 +56,12 @@ const SaveOrder = async (req,res)=>{
                 SubmitBy:Deadline,
                 Client:userLoggedIn
             })
+            if(order){
+                //order created successfuly 
+                res.status(201).json({success:'success',message:'Order Created Successfully'})
+            }else{
+                res.status(400).json({error:'error',message:'Could Not Created the Order'})
+            }
         }
     }
 }
@@ -88,4 +94,52 @@ const OrderSingle = async (req,res)=>{
     }
 }
 
-module.exports = {Index,SaveOrder,MyOrders,OrderSingle}
+//create a route to handle withdrawn Order
+
+const WithdrawOrder = async (req,res)=>{
+    //parse the url to get the parameters 
+    const {query} = url.parse(req.url,true)
+    //get the order ID
+    let userEmail = res.locals.user.email
+    const orderExists =  await Order.isExists(query.orderID,userEmail)
+    console.log(orderExists)
+    if(orderExists){
+        //then get the Order Object
+        try {
+            const user = await User.findOne({email:userEmail})
+            let orderDetails = await Order.findOne({_id:query.orderID,Client:user})
+            orderDetails.Status = 'Withdrawn'
+            orderDetails.save()
+            //return a message to the frontend
+            res.status(200).redirect('/MyOrders')
+        } catch (error) {
+            res.status(400).redirect('/MyOrders')
+        }
+    }else{
+        res.status(400).redirect('/MyOrders')
+    }
+}
+const DeleteOrder = async (req,res)=>{
+    //parse the url to get the parameters 
+    const {query} = url.parse(req.url,true)
+    //get the order ID
+    let userEmail = res.locals.user.email
+    const orderExists =  await Order.isExists(query.orderID,userEmail)
+    if(orderExists){
+        //then get the Order Object
+        try {
+            //check also the user email 
+            const user = await User.findOne({email:userEmail})
+            const order = await Order.findOneAndDelete({_id:query.orderID,Client:user})
+            console.log('deleting record')
+            //return a message to the frontend
+            res.status(200).redirect('/MyOrders')
+        } catch (error) {
+            console.log("could not delete")
+            res.status(400).redirect('/MyOrders')
+        }
+    }else{
+        res.status(400).redirect('/MyOrders')
+    }
+}
+module.exports = {Index,SaveOrder,MyOrders,OrderSingle,WithdrawOrder,DeleteOrder}

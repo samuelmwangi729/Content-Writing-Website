@@ -4,9 +4,10 @@ const mongoose = require('mongoose')
 const connDb = async ()=>{
     //use the try catch block
     try{
-        await mongoose.connect("mongodb+srv://writerssuperadmin:EhyZRGkz4QD60J9Z@writerscluster.brh8p66.mongodb.net/WritersCluster?retryWrites=true&w=majority")
+        const dbURL = "mongodb+srv://writerssuperadmin:EhyZRGkz4QD60J9Z@writerscluster.brh8p66.mongodb.net/WritersCluster?retryWrites=true&w=majority"
+        await mongoose.connect(dbURL)
         .then(response=>{
-            console.log('connection successful')
+            console.log('Successfully connected to the Database')
         })
     }catch(e){
         console.log('could not connect to the database')

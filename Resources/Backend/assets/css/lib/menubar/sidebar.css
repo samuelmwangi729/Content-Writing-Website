@@ -210,8 +210,12 @@ body {
 
 .sidebar-hide .sidebar {
     left: -250px;
+    height: 1000px !important;
 }
-
+.sidebar-hide{
+   height: 80vh; 
+   overflow: hidden;
+}
 .sidebar {
     transition: left 300ms ease-in-out, width 300ms ease-in-out;
 }
