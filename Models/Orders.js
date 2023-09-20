@@ -52,12 +52,21 @@ const OrderSchema = new Schema({
 },{timestamps:true})
 OrderSchema.statics.isExists = async  (orderID,userEmail)=>{
     //import the user model 
-    console.log(userEmail)
     //confirm if the order exists in the database 
     const user = await User.findOne({email:userEmail})
     const order = await Orders.findOne({_id:orderID,Client:user})
     if(order){
         //return true because the order exist 
+        return true
+    }else{
+        return false
+    }
+}
+OrderSchema.statics.getProject = async  (orderID)=>{
+    //import the user model 
+    //confirm if the order exists in the database 
+    const order = await Orders.findOne({_id:orderID})
+    if(order){
         return true
     }else{
         return false

@@ -1,0 +1,86 @@
+<%- include('../partials/header.ejs') %>
+<body>
+<%- include('../partials/sidebar.ejs') %>
+<%- include('../partials/navbar.ejs') %>
+<div class="content-wrap">
+    <div class="main">
+        <div class="container-fluid">
+            <!-- content goes here  -->
+            <div class="unix-login">
+                <div class="container-fluid">
+                    <div class="row text-center">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <div class="login-content">
+                                <div class="login-form">
+                                    <span>Bid On The Project: </span>
+                                    <span class="text-success text-bold">
+                                        <%= project.Title %>
+                                    </span>
+                                    <h6 class="text-warning">
+                                      At  $ <%= project.Budget %>
+                                    </h6>
+                                    <form id="bidsForm">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" class="form-control" name="ProjectID" value="<%= projectID %>">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="Bid Title">Bid Title</label>
+                                                    <h6 id="bidTitleError" class="text-danger"></h6>
+                                                    <input type="text" class="form-control" id="bidTitle" name="BidTitle">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="Bid Title">Bid Description</label>
+                                                    <h6 id="bidDescError" class="text-danger"></h6>
+                                                    <textarea class="form-control" name="BidDescription" id="BidDescription" style="width: 100%;color: white;" rows="10"> </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label>Your Budget</label>
+                                                    <input type="number" class="form-control" name="BidBudget" placeholder="Your Budget in USD">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">Post Your Bid</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const form = document.querySelector('form#bidsForm')
+    const errorField = document.querySelector('h6#errorsCategory')
+    const bidTitleError = document.querySelector("#bidTitle")
+    const bidTitle = form.bidTitle.value
+    const bidDescription = form.BidDescription.value
+    form.addEventListener('submit', async (event)=>{
+        event.preventDefault();
+        alert(bidTitle)
+        if(!bidTitle){
+            bidTitleError.classList.add('error')
+            document.querySelector("#bidTitleError").textContent = "This field is required"
+        }else if(!bidDescription){
+            BidDescription.classList.add('error')
+            bidDescError.querySelector('#bidDescError').textContent = "This field is required"
+        }
+    })
+</script>
+<%- include('../partials/scripts.ejs') %>
+</body>
+
+</html> 

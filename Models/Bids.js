@@ -17,6 +17,10 @@ const BidSchema = new Schema({
         type:String,
         required:[true,'The description is required']
     },
+    BidAmount:{
+        type:Number,
+        required:[true,'The bid amount is required']
+    },
     BidType:{
         type:String,
         enum:['Sealed','Highlighted','Sponsored','Basic'],
