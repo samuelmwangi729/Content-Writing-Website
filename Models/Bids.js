@@ -32,7 +32,7 @@ const BidSchema = new Schema({
         default:'Pending'
     },
     Freelancer:{
-        type:Object.Types.ObjectId,
+        type:Schema.Types.ObjectId,
         ref:User,
         required:[true,'The user is required']
     }
