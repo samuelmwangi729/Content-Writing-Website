@@ -26,31 +26,44 @@ const createBid = async (req,res)=>{
 const SaveBid = async (req,res)=>{
     //try and save the bid from the frontend 
     //check if the project exists
-    const {projectID,bidTitle,bidDescrition,bidBudget} = req.body
-    //check if the project exists 
+    const {projectID,bidTitle,bidDescription,bidBudget} = req.body
+    //check if the project exists
     //display the user who just placed the bid
     const user = await User.findOne({email:res.locals.user.email})
     //check if the project exists 
     try{
         const project = await Order.findById(projectID)
-        console.log(project)
+        if(user){
+            try{
+                //check if a bid with the project id and userid exists 
+                const bidExists = await Bid.bidExist(projectID,res.locals.user.email)
+                if(bidExists){
+                    res.status(400).json({status:'error',message:'Duplicate Bid Placed'})
+                }else{
+                    //create the bid
+                    const bid =  await Bid.create({
+                        ProjectID:project,
+                        BidTitle:bidTitle,
+                        BidDescription:bidDescription,
+                        BidAmount:bidBudget,
+                        Freelancer:user,
+                    })
+                    if(bid){
+                        res.status(201).json({status:'success',message:'Bid successfully Placed'})
+                    }
+                }
+            }catch(e){
+                //could not place the bid
+                res.status(400).json({status:'error',message:'Could not place the bid. Please try again later'})
+            }
+        }else{
+            //User error
+            res.status(400).json({status:'error',message:'Bad Request. Try Again Later'})
+        }
     }catch(e){
         //if the project does not exist, return to projects page 
+        res.status(400).json({status:'error',message:'Bad Request. Try Again Later'})
 
     }
-    if(user){
-        try{
-            //create the bid
-            const bid =  await Bid.create({
-                ProjectID:projectID,
-                BidTitle:bidTitle,
-                BidAmount:bidBudget,
-                Freelancer:user,
-            })
-        }catch(e){
-            //catch the error here 
-        }
-    }
-    console.log(user)
 }
 module.exports = {Index,createBid,SaveBid}

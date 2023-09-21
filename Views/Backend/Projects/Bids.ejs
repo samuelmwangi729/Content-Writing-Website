@@ -9,9 +9,14 @@
             <div class="unix-login">
                 <div class="container-fluid">
                     <div class="row text-center">
-                        <div class="col-sm-8 col-sm-offset-2">
+                        <div class="col-sm-8 col-sm-offset-2" style="margin-top:-90px !important">
                             <div class="login-content">
                                 <div class="login-form">
+                                    <div class="success-alert" id="successAlert">
+                                        <div class="alert" id="dataBackAlert">
+                                            <strong id="dataBackTitle"></strong> <span id="dataBackMessage"></span>
+                                        </div>
+                                    </div>
                                     <span>Bid On The Project: </span>
                                     <span class="text-success text-bold">
                                         <%= project.Title %>
@@ -73,7 +78,7 @@
         bidTitleError.classList.remove('error')
         document.querySelector("#bidTitleError").textContent = ''
         const bidTitle = form.bidTitle.value
-        const bidDescription = document.getElementById("BidDescriptionID").value
+        const bidDescription = form.BidDescription.value
         const bidBudget = form.BidBudget.value
         const projectID = form.ProjectID.value
         if(!bidTitle){
@@ -86,7 +91,6 @@
         }
         //post data to the backend 
         //form data 
-        let formData = new FormData()
         const formBody ={
             'projectID':projectID,
             'bidTitle':bidTitle,
@@ -100,8 +104,15 @@
                 'Content-Type':'application/json'
             }
         })
-        const dataBack = await res.json()
-        console.log(dataBack)
+        const {status,message} = await res.json()
+        document.querySelector("#dataBackTitle").textContent = status
+        document.querySelector("#dataBackMessage").textContent = message
+        if(status == 'success'){
+            document.querySelector("div#dataBackAlert").classList.add('alert-success')
+            // document.querySelector("alert#dataBackAlert").classList.remove('hidden')
+        }else{
+            document.querySelector("div#dataBackAlert").classList.add('alert-danger')
+        }
     })
 </script>
 <%- include('../partials/scripts.ejs') %>

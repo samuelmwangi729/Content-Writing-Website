@@ -37,6 +37,18 @@ const BidSchema = new Schema({
         required:[true,'The user is required']
     }
 },{timestamps:true})
+BidSchema.statics.bidExist = async(projectID,username)=>{
+    console.log(username,projectID)
+    //get the user object
+    const userObj = await User.findOne({email:username})
+    //get the bids 
+    const bid = await Bids.findOne({ProjectID:projectID,Freelancer:userObj})
+    if(bid){
+        return true
+    }else{
+        return false
+    }
+}
 const Bids = model('Bids',BidSchema)
 //export the model 
 module.exports = Bids
