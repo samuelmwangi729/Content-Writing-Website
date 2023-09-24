@@ -3,8 +3,24 @@ const url = require('url')
 const Order = require('../Models/Orders') 
 const User = require('../Models/Users')
 const Bid = require('../Models/Bids')
-const Index = (req,res)=>{
-    res.status(200).json({message:'Projects Index, Display ALl projects here'})
+const moment = require('moment')
+const countdown = require('moment-countdown');
+const TakeProject = async (req,res)=>{
+    //check the user's membership status 
+    //check if the project exists 
+    //update the take limit 
+    //update the project status
+    //make sure its hidden
+    //return a reload signal
+    res.status(200).json({message:'Project Taken'})
+}
+const Index = async (req,res)=>{
+    //get all the projects that are active. 
+    //For testing purposes, we will display all the projects alias orders
+    projects = await Order.find({Status:'Pending'})
+    res.locals.moment = moment
+    res.locals.countdown = countdown
+    res.render('Backend/Projects/All.ejs',{projects:projects})
 }
 const createBid = async (req,res)=>{
     //get the url parameter
@@ -66,4 +82,4 @@ const SaveBid = async (req,res)=>{
 
     }
 }
-module.exports = {Index,createBid,SaveBid}
+module.exports = {Index,createBid,SaveBid,TakeProject}

@@ -44,7 +44,8 @@ getUser = async (req,res,next)=>{
                     isStaff:sysUser.isStaff,
                     isAdmin:sysUser.isAdmin,
                     userLevel:sysUser.useLevel,
-                    userStatus:sysUser.userStatus
+                    userStatus:sysUser.userStatus,
+                    membership:'Gold'
                 }
                 res.locals.user = user
                 //the token is valid 
