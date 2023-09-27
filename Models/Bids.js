@@ -38,7 +38,6 @@ const BidSchema = new Schema({
     }
 },{timestamps:true})
 BidSchema.statics.bidExist = async(projectID,username)=>{
-    console.log(username,projectID)
     //get the user object
     const userObj = await User.findOne({email:username})
     //get the bids 

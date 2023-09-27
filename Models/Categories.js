@@ -22,4 +22,4 @@ CategoriesSchema.statics.getID = async (id)=>{
 //compile the schema into models
 const Categories = mongoose.model('Categories',CategoriesSchema)
 
-module.exports=Categories
+module.exports={Categories,CategoriesSchema}

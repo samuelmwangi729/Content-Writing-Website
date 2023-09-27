@@ -3,17 +3,16 @@ const url = require('url')
 const Order = require('../Models/Orders') 
 const User = require('../Models/Users')
 const Bid = require('../Models/Bids')
-<<<<<<< HEAD
-const Index = async (req,res)=>{
-    //display all the orders here that are yet to be assigned to anyone
-    //display online orders only 
-    //also skip the orders where the user is the current logged in user
-    let orders = await Order.find({Status:"Pending"})
-    console.log(orders)
-    res.status(200).render('Backend/Projects/All.ejs',{projects:orders})
-=======
 const moment = require('moment')
 const countdown = require('moment-countdown');
+// const Index = async (req,res)=>{
+//     //display all the orders here that are yet to be assigned to anyone
+//     //display online orders only 
+//     //also skip the orders where the user is the current logged in user
+//     let orders = await Order.find({Status:"Pending"})
+//     console.log(orders)
+//     res.status(200).render('Backend/Projects/All.ejs',{projects:orders})
+// }
 const TakeProject = async (req,res)=>{
     //check the user's membership status 
     //check if the project exists 
@@ -30,7 +29,6 @@ const Index = async (req,res)=>{
     res.locals.moment = moment
     res.locals.countdown = countdown
     res.render('Backend/Projects/All.ejs',{projects:projects})
->>>>>>> a63599a1fc0c38470a1e5c604d32629a22a56768
 }
 const createBid = async (req,res)=>{
     //get the url parameter
@@ -64,7 +62,7 @@ const SaveBid = async (req,res)=>{
                 //check if a bid with the project id and userid exists 
                 const bidExists = await Bid.bidExist(projectID,res.locals.user.email)
                 if(bidExists){
-                    res.status(400).json({status:'error',message:'Duplicate Bid Placed'})
+                    res.status(400).json({status:'error',message:'You have Placed your bid On this Project'})
                 }else{
                     //create the bid
                     const bid =  await Bid.create({

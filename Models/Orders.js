@@ -1,6 +1,6 @@
 const {Schema,model } = require("mongoose");
 const User = require('./Users')
-const Categories = require('./Categories')
+const {Categories,CategoriesSchema} = require('./Categories')
 const OrderSchema = new Schema({
     Title:{
         type:String,
