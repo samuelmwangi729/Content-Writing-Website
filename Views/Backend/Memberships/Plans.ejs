@@ -1,0 +1,128 @@
+<%- include('../partials/header.ejs') %>
+<body>
+<%- include('../partials/sidebar.ejs') %>
+<%- include('../partials/navbar.ejs') %>
+<div class="content-wrap">
+    <div class="main">
+        <div class="container-fluid">
+            <!-- content goes here  -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card alert">
+                        <div class="card-header">
+                            <h4>Membership Plans</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert hidden" id="messageAlert">
+                                <strong id="alertStrong"></strong> <span id="alertMessage"></span>
+                            </div>
+                            <p class="text-muted m-b-15">
+                                Create Membership Plans
+                            </p>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <form id="membershipForm">
+                                        <div class="form-group">
+                                            <label for="Title"> <i class="ti ti-tag"></i> Title</label>
+                                            <h6 class="d-block text-danger" id="membershipTitleError"></h6>
+                                            <input type="text" name="membershipTitle" id="membershipTitle" class="form-control" style="color:white !important" placeholder="Enter the Membership Title Here">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Title"> <i class="ti ti-panel"></i> Benefit</label>
+                                            <h6 class="d-block text-danger" id="membershipBenefitError"></h6>
+                                            <input type="text" name="membershipBenefit" id="membershipBenefit" class="form-control text-white" style="color:white !important" placeholder="Enter the Membership Benefit Here">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Title"> <i class="ti ti-server"></i> Subscription Fees</label>
+                                            <h6 class="d-block text-danger" id="membershipFeesError"></h6>
+                                            <input type="number" name="membershipFees" class="form-control text-white" style="color:white !important" placeholder="Enter the Membership Budget Here">
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-outline btn-success btn-block">Add Plan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card alert">
+                        <div class="card-header">
+                            <h4>Available Plans</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted m-b-15">The <code>.panel-heading</code> class adds a heading to the panel:</p>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Panel Heading</div>
+                                <div class="panel-body">Panel Content</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/scripts.ejs') %>
+<script>
+    const form = document.querySelector("form#membershipForm")
+    form.addEventListener('submit',async(event)=>{
+        event.preventDefault()
+        const membershipTitle = form.membershipTitle.value
+        const membershipBenefit = form.membershipBenefit.value
+        const membershipFees = form.membershipFees.value
+        document.querySelector("h6#membershipTitleError").textContent=""
+        document.querySelector("h6#membershipBenefitError").textContent = ""
+        document.querySelector("h6#membershipFeesError").textContent=""
+        if(!membershipTitle){
+            document.querySelector("h6#membershipTitleError").textContent="Membership Title is Required"
+            form.membershipTitle.classList.add('error')
+        }else{
+            form.membershipTitle.classList.remove("error")
+        }
+        if(!membershipBenefit){
+            document.querySelector("h6#membershipBenefitError").textContent = "The Benefit is Required"
+           form.membershipBenefit.classList.add("error")
+        }else{
+            form.membershipBenefit.classList.remove("error")
+        }
+        if(!membershipFees){
+            document.querySelector("h6#membershipFeesError").textContent="Membership Fees Is required"
+            form.membershipFees.classList.add("error")
+        }else{
+            form.membershipFees.classList.remove("error")
+        }
+        if(membershipTitle && membershipBenefit && membershipFees  ){
+           const formBody = {
+            title:membershipTitle,
+            benefit:membershipBenefit,
+            fees:membershipFees
+           }
+           const res = await fetch("/Post/Membership/Benefits",{
+            method:'post',
+            body:JSON.stringify(formBody),
+            headers:{
+                'Content-Type':'application/json'
+            }
+           })
+           const dataBack = await res.json()
+           form.reset()
+           if(dataBack.success){
+            document.querySelector("#messageAlert").classList.remove("hidden")
+            document.querySelector("#messageAlert").classList.add("alert-success")
+            document.querySelector("#alertStrong").textContent = dataBack.success
+            document.querySelector("#alertMessage").textContent = dataBack.message
+           }else{
+            document.querySelector("#messageAlert").classList.remove("hidden")
+            document.querySelector("#messageAlert").classList.add("alert-success")
+            document.querySelector("#alertStrong").textContent = dataBack.success
+            document.querySelector("#alertMessage").textContent = dataBack.message
+           }
+        }
+    })
+</script>
+</body>
+
+</html> 

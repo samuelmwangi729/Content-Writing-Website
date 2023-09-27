@@ -46,6 +46,14 @@ const OrderSchema = new Schema({
         type:Number,
         default:0
     },
+    Proposals:{
+        type:Number,
+        default:4
+    },
+    Bids:{
+        type:Number,
+        default:0
+    },
     SubmitBy:{
         type:Date,
     }
