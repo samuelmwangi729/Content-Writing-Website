@@ -3,8 +3,13 @@ const url = require('url')
 const Order = require('../Models/Orders') 
 const User = require('../Models/Users')
 const Bid = require('../Models/Bids')
-const Index = (req,res)=>{
-    res.status(200).json({message:'Projects Index, Display ALl projects here'})
+const Index = async (req,res)=>{
+    //display all the orders here that are yet to be assigned to anyone
+    //display online orders only 
+    //also skip the orders where the user is the current logged in user
+    let orders = await Order.find({Status:"Pending"})
+    console.log(orders)
+    res.status(200).render('Backend/Projects/All.ejs',{projects:orders})
 }
 const createBid = async (req,res)=>{
     //get the url parameter
