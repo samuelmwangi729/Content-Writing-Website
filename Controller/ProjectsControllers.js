@@ -5,6 +5,9 @@ const User = require('../Models/Users')
 const Bid = require('../Models/Bids')
 const moment = require('moment')
 const countdown = require('moment-countdown');
+require('dotenv').config();
+const express = require('express')
+const https = require('https');
 // const Index = async (req,res)=>{
 //     //display all the orders here that are yet to be assigned to anyone
 //     //display online orders only 
@@ -114,4 +117,61 @@ const SaveBid = async (req,res)=>{
 
     }
 }
-module.exports = {Index,createBid,SaveBid,TakeProject}
+const ProjectsPayments = async (req, res)=>{
+    const public_key = process.env.LIVE_PUBLIC_KEY
+    const secret_key = process.env.LIVE_SECRET_KEY
+    const params = JSON.stringify({
+        "email": "samuelmwangi729@gmail.com",
+        "amount": 50 * 100,
+        "metadata": {
+          "custom_fields": [
+            {
+                //set the value for the order the client is paying for
+              "value": "makurdi",
+              "display_name": "Donation for",
+              "variable_name": "donation_for"
+            }
+          ]
+        },
+        "bank":{
+            "code": "057",
+            "account_number": "0000000000"
+        },
+        "birthday": "1995-12-23"
+      })
+      
+      const options = {
+        hostname: 'api.paystack.co',
+        port: 443,
+        path: '/transaction/initialize',
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${secret_key}`,
+          'Content-Type': 'application/json'
+        }
+      }
+      
+      const reqData = https.request(options, resp => {
+        let data = ''
+      
+        resp.on('data', (chunk) => {
+          data += chunk
+        });
+      
+        resp.on('end', () => {
+            const ed = JSON.parse(data)
+            console.log(ed)
+            if(ed.status){
+                res.redirect(ed.data['authorization_url'])
+            }else{
+                res.json(ed)
+            }
+        })
+      }).on('error', error => {
+        console.error(error)
+      })
+      
+      reqData.write(params)
+      reqData.end()
+}
+module.exports = {Index,createBid,SaveBid,TakeProject,ProjectsPayments}
