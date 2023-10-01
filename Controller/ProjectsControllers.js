@@ -14,13 +14,37 @@ const countdown = require('moment-countdown');
 //     res.status(200).render('Backend/Projects/All.ejs',{projects:orders})
 // }
 const TakeProject = async (req,res)=>{
+    const {id} = req.body
+    const userEmail = res.locals.user.email
+    //check if the user is logged in
+    if(userEmail){
+        const user = await User.findOne({email:userEmail})
+        //find the order and update the status to awarded
+        const order = await Order.findById(id)
+        if(order){
+            if(order.Status==='Awarded'){
+                res.status(400).json({status:'error',message:'Bad request'})
+            }else{
+            //then the order exists, else erturn an error message 
+            order.Status='Awarded'
+            order.AwardedTo = user
+            order.save()
+            //send a refresh signal
+            res.status(200).json({status:'success',message:'Congratulations, You took the project',refresh:true})
+            }
+        }else{
+            res.status(400).json({status:'error',message:'Bad request'})
+        }
+    }else{
+        //user not logged in 
+        res.status(400).json({status:'error',message:'Bad request'})
+    }
     //check the user's membership status 
     //check if the project exists 
     //update the take limit 
     //update the project status
     //make sure its hidden
     //return a reload signal
-    res.status(200).json({message:'Project Taken'})
 }
 const Index = async (req,res)=>{
     //get all the projects that are active. 
@@ -62,7 +86,7 @@ const SaveBid = async (req,res)=>{
                 //check if a bid with the project id and userid exists 
                 const bidExists = await Bid.bidExist(projectID,res.locals.user.email)
                 if(bidExists){
-                    res.status(400).json({status:'error',message:'You have Placed your bid On this Project'})
+                    res.status(400).json({status:'error',message:'You had already Placed your bid On this Project'})
                 }else{
                     //create the bid
                     const bid =  await Bid.create({
