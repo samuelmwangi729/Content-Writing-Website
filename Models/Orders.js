@@ -1,6 +1,6 @@
 const {Schema,model } = require("mongoose");
 const User = require('./Users')
-const {Categories,CategoriesSchema} = require('./Categories')
+const Categories = require('./Categories')
 const OrderSchema = new Schema({
     Title:{
         type:String,
@@ -21,7 +21,7 @@ const OrderSchema = new Schema({
     },
     Budget:{
         type:Number,
-        default:''
+        default:20,
     },
     Status:{
         type:String,
@@ -53,6 +53,11 @@ const OrderSchema = new Schema({
     Bids:{
         type:Number,
         default:0
+    },
+    PaymentStatus:{
+        type:String,
+        enum:['Paid','Not Paid'],
+        default:'Not Paid'
     },
     SubmitBy:{
         type:Date,

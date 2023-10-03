@@ -1,5 +1,6 @@
 //check the controller here
 const url = require('url')
+const InitPay = require('../Models/InitializedPayments')
 const Order = require('../Models/Orders') 
 const User = require('../Models/Users')
 const Bid = require('../Models/Bids')
@@ -174,4 +175,126 @@ const ProjectsPayments = async (req, res)=>{
       reqData.write(params)
       reqData.end()
 }
-module.exports = {Index,createBid,SaveBid,TakeProject,ProjectsPayments}
+const DepositProject = async (req,res) =>{
+    //get the url parameters
+    const {query} = url.parse(req.url,true)
+    let OrderID = query.OrderID
+    const userEmail = res.locals.user.email
+    const projectExists = await Order.isExists(OrderID,userEmail)
+    if(projectExists){
+        //initialize the payment method
+        const project = await Order.findById(OrderID)
+        //call the pay function and set the payment reason to the function 
+        await InitiatePay(res,OrderID,"Order","Deposit For Order",project.Budget,userEmail)
+    }else{
+        //return redirect back to dashboard 
+        res.redirect("/Dashboard")
+    }
+} 
+const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
+    //first check the logged in user
+    //we will store the id, reason and type in the database
+    const secret_key = process.env.LIVE_SECRET_KEY
+    console.log(userEmail)
+    const params = JSON.stringify({
+        "email": userEmail,
+        "amount": Amount * 100,
+        "metadata": {
+          "custom_fields": [
+            {
+                //set the value for the order the client is paying for
+              "value": Reason,
+              "display_name": "Payment for",
+              "variable_name": "payment_for"
+            },
+            {
+                "value": PaymentID,
+                "display_name": "Payment Ref",
+                "variable_name": "payment_ref"
+            },
+            {
+                "value": PaymentType,
+                "display_name": "Payment For",
+                "variable_name": "payment_for"
+            }
+          ]
+        },
+      })
+      
+    const options = {
+    hostname: 'api.paystack.co',
+    port: 443,
+    path: '/transaction/initialize',
+    method: 'POST',
+        headers: {
+            Authorization: `Bearer ${secret_key}`,
+            'Content-Type': 'application/json'
+        }
+    }
+    
+    const reqData = https.request(options, resp => {
+        let data = ''
+        resp.on('data', (chunk) => {
+            data += chunk
+        });
+        resp.on('end', async () => {
+            const ed = JSON.parse(data)
+            console.log(ed)
+            if(ed.status){
+                const initLog = await InitPay.create({
+                    InitStatus:ed.status,
+                    Message:ed.message,
+                    AuthUrl:ed.data['authorization_url'],
+                    AccessCode:ed.data['access_code'],
+                    PaymentRef:ed.data['reference'],
+                    PaymentReason:Reason,
+                    UserEmail:userEmail,
+                    OurRef:PaymentID,
+                    PaymentType:PaymentType,
+                    AmountPaid:Amount,
+                })
+                if(initLog){
+                    console.log(initLog)
+                    res.redirect(ed.data['authorization_url'])
+                }
+            }else{
+                res.redirect("/Dashboard")
+            }
+        })
+    })
+    .on('error', error => {
+        //if there is an error, return an error and redirect to dashboard
+        res.status(400).redirect("/Dashboard")
+    })
+    reqData.write(params)
+    reqData.end()
+
+}
+const getCallBackData = (req,res)=>{
+    const data = req.body
+    const stats = data.data
+    console.log(data.data.paidAt)
+    let paymentStatus = stats.status
+    let paymentref = stats.reference
+    let paymentAmount = stats.amount / 100
+    let paymentChannel = stats.channel
+    let paymentCurrency = stats.currency
+    let ipAddress = stats.ip_address
+    let cardBin = stats.authorization.bin
+    let cardLastFour = stats.authorization.last4
+    let cardExpMonth =stats.authorization.exp_month
+    let cardExpYear =stats.authorization.exp_year
+    let cardType =stats.authorization.card_type
+    let cardBank =stats.authorization.bank
+    let cardCountry =stats.authorization.country_code
+    let cardBrand =stats.authorization.brand
+    let customerEmail = stats.customer.email
+    let paidAt =  data.data.paidAt
+    //update the payments table
+    //then check if the amount paid is the same as the project amount 
+    //check from the initialized table
+    //if true, redirect to projects page 
+    //else, go back with an error message
+    res.json({data})
+}
+module.exports = {Index,createBid,SaveBid,TakeProject,ProjectsPayments,DepositProject,getCallBackData}

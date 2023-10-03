@@ -159,6 +159,7 @@
             })
             const dataBack = await res.json()
             if(dataBack.success){
+                form.reset()
                 showAlert()
                 setTimeout(()=>{
                   window.location.href = "/MyOrders"

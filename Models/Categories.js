@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
+const {Schema,model} = require('mongoose')
 const User = require('./Users')
-const CategoriesSchema = mongoose.Schema({
+const CategoriesSchema = new Schema({
     CategoryName:{
         type:String,
         required:[true,'The Category Name Is Required']
@@ -11,7 +11,7 @@ const CategoriesSchema = mongoose.Schema({
         default:'Content'
     },
     createdBy:{
-        type:mongoose.Schema.Types.ObjectId,
+        type:Schema.Types.ObjectId,
         ref:User,
         required:[true,'The user is required']
     }
@@ -20,6 +20,6 @@ CategoriesSchema.statics.getID = async (id)=>{
     return id.toString().split("\"")[0]
 }
 //compile the schema into models
-const Categories = mongoose.model('Categories',CategoriesSchema)
+const Categories = model('Categories',CategoriesSchema)
 
-module.exports={Categories,CategoriesSchema}
+module.exports=Categories

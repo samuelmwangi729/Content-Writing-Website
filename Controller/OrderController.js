@@ -6,7 +6,7 @@ const url =  require('url')
 const moment = require('moment')
 const Index = async (req,res)=>{
     //filter out the categories that use orders only 
-    categories = await Categorys.find({CategoryType:'Content'})
+    let categories = await Categorys.find({CategoryType:'Content'})
     res.render('Backend/Orders/Index.ejs',{title:'Orders Index Page',categories:categories})
 }
 const SaveOrder = async (req,res)=>{

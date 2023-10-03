@@ -22,6 +22,7 @@
                                     <thead>
                                         <tr>
                                             <th>Project Title</th>
+                                            <th>Payment Status</th>
                                             <th>Type</th>
                                             <th>Price</th>
                                             <th>Status</th>
@@ -42,6 +43,15 @@
                                             <% orders.forEach(item=>{ %>
                                             <tr>
                                                 <td><%= item.Title %></td>
+                                                <td>
+                                                    <% if(item.PaymentStatus ==='Not Paid'){ %>
+                                                        <span>Not Paid
+                                                            <a href="/Deposit?OrderID=<%= item._id %>">Pay Now</a>
+                                                        </span>
+                                                    <% }else{ %>
+                                                        <span>Paid</span>
+                                                        <% } %>
+                                                </td>
                                                 <td><%= item.ProjectType %></td>
                                                 <td><span class="badge badge-primary"> $<%= item.Budget %></span></td>
                                                 <td><span class="badge badge-sm badge-danger">

@@ -1,6 +1,6 @@
 const {Router} = require('express')
 const {checkAuth,getUser} = require('../Middlewares/AuthMiddleware')
-const {Index,createBid,SaveBid,TakeProject,ProjectsPayments} = require('../Controller/ProjectsControllers')
+const {Index,createBid,SaveBid,TakeProject,ProjectsPayments,DepositProject,getCallBackData} = require('../Controller/ProjectsControllers')
 const ProjectRoutes = Router()
 //then create the routes here from the projects controllers 
 //create projects bids 
@@ -8,7 +8,9 @@ const ProjectRoutes = Router()
 ProjectRoutes.get('/BidProject',checkAuth,getUser,createBid)
 .get('/Projects',getUser,checkAuth,Index)
 .get('/Payments/Projects',getUser,checkAuth,ProjectsPayments)
+.get('/Deposit',getUser,checkAuth,DepositProject)
 .post('/ProjectBid',getUser,checkAuth,SaveBid)
 .post('/TakeProject',getUser,checkAuth,TakeProject)
+.post('/CallBack',getCallBackData)
 
 module.exports = ProjectRoutes
