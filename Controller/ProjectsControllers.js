@@ -173,13 +173,14 @@ const DepositProject = async (req,res) =>{
     const userEmail = res.locals.user.email
     const projectExists = await Order.isExists(OrderID,userEmail)
     if(projectExists){
+        console.log('project exists')
         //initialize the payment method
         const project = await Order.findById(OrderID)
         //call the pay function and set the payment reason to the function 
         await InitiatePay(res,OrderID,"Order","Deposit For Order",project.Budget,userEmail)
     }else{
         //return redirect back to dashboard 
-        res.redirect("/Dashboard")
+        res.redirect("/MyOrders")
     }
 } 
 const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
@@ -188,19 +189,6 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
     const userObj = await User.findOne({email:userEmail})
     const project = await Order.findOne({_id:PaymentID,Client:userObj})
     let payAmount = Amount * 100
-    //compare the amounts
-    if(project){
-        if((project.Budget * 100) === payAmount){
-            payAmount = project.Budget * 100
-        }else{
-            //check the paid amount in the init pay
-            payAmount = Amount * 100
-        }
-       
-    }else{
-        payAmount = Amount * 100
-    }
-    //we will store the id, reason and type in the database
     const secret_key = process.env.LIVE_SECRET_KEY
     const params = JSON.stringify({
         "email": userEmail,
@@ -246,6 +234,7 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
         });
         resp.on('end', async () => {
             const ed = JSON.parse(data)
+            console.log(ed)
             if(ed.status){
                 const initLog = await InitPay.create({
                     InitStatus:ed.status,
@@ -259,6 +248,7 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
                     PaymentType:PaymentType,
                     AmountPaid:Amount,
                 })
+                console.log(initLog)
                 if(initLog){
                     res.redirect(ed.data['authorization_url'])
                 }
