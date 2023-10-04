@@ -46,7 +46,7 @@ const TakeProject = async (req,res)=>{
 const Index = async (req,res)=>{
     //get all the projects that are active. 
     //For testing purposes, we will display all the projects alias orders
-    projects = await Order.find({Status:'Pending'})
+    projects = await Order.find({Status:'Online'})
     res.locals.moment = moment
     res.locals.countdown = countdown
     res.render('Backend/Projects/All.ejs',{projects:projects})
@@ -173,7 +173,6 @@ const DepositProject = async (req,res) =>{
     const userEmail = res.locals.user.email
     const projectExists = await Order.isExists(OrderID,userEmail)
     if(projectExists){
-        console.log('project exists')
         //initialize the payment method
         const project = await Order.findById(OrderID)
         //call the pay function and set the payment reason to the function 
@@ -234,7 +233,6 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
         });
         resp.on('end', async () => {
             const ed = JSON.parse(data)
-            console.log(ed)
             if(ed.status){
                 const initLog = await InitPay.create({
                     InitStatus:ed.status,
@@ -248,7 +246,6 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
                     PaymentType:PaymentType,
                     AmountPaid:Amount,
                 })
-                console.log(initLog)
                 if(initLog){
                     res.redirect(ed.data['authorization_url'])
                 }
@@ -267,7 +264,6 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
 }
 const getCallBackData = async (req,res)=>{
     const data = req.body
-    console.log(data)
     const stats = data.data
     let paymentStatus = stats.status //Our reference in the payment Initialized
     let paymentref = stats.reference
@@ -306,18 +302,14 @@ const getCallBackData = async (req,res)=>{
     })
     //then check if the amount paid is the same as the project amount 
     const initialPay = await InitPay.findOne({PaymentRef:paymentref})
-    console.log(initialPay)
-    if(initialPay.AmountPaid ===paymentAmount ){
-        //update the payment status
-        const user = await User.findOne({email:initialPay.UserEmail})
-        const project = await Order.findOne({_id:initialPay.OurRef,Client:user})
-        if(project){
-            project.Status = "Online"
-            project.save()
-            //done end
-        }
-    }else{
-        //set the remaining amount to
+    const user = await User.findOne({email:initialPay.UserEmail})
+    const project = await Order.findOne({_id:initialPay.OurRef,Client:user})
+    console.log(project)
+    if(project){
+        project.Status = "Online"
+        project.PaymentStatus = "Paid"
+        project.save()
+        //done end
     }
     //check from the initialized table
     //if true, redirect to projects page 

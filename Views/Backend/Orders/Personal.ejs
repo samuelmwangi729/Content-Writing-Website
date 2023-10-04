@@ -18,7 +18,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover table-bordered">
+                                <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Project Title</th>
@@ -41,23 +41,34 @@
                                             </tr>
                                         <% }else{ %>
                                             <% orders.forEach(item=>{ %>
-                                            <tr>
+                                                <% if(item.PaymentStatus ==='Paid'){ %>
+                                            <tr class="bg-success">
+                                                <% }else { %>
+                                                    <tr>
+                                                        <% } %>
                                                 <td><%= item.Title %></td>
-                                                <td>
+                                                <td class="text-center">
                                                     <% if(item.PaymentStatus ==='Not Paid'){ %>
-                                                        <span>Not Paid
+                                                        <span class="badge bg-danger">
                                                             <a href="/Deposit?OrderID=<%= item._id %>">Pay Now</a>
                                                         </span>
                                                     <% }else{ %>
-                                                        <span>Paid</span>
+                                                        <span class="badge bg-warning">Paid</span>
                                                         <% } %>
                                                 </td>
                                                 <td><%= item.ProjectType %></td>
                                                 <td><span class="badge badge-primary"> $<%= item.Budget %></span></td>
-                                                <td><span class="badge badge-sm badge-danger">
+                                                <% if(item.Status==="Online"){ %>
+                                                <td><span class="badge badge-sm badge-warning">
                                                     <%= item.Status %>
                                                 </span>
                                                 </td>
+                                                <% }else{ %>
+                                                    <td><span class="badge badge-sm badge-danger">
+                                                        <%= item.Status %>
+                                                    </span>
+                                                    </td>
+                                                    <% } %>
                                                 </span>
                                                 <td>
                                                     <span><a href="/OrderSingle?OrderID=<%= item?._id %>"><i class="ti ti-eye color-default"></i></a> </span>
