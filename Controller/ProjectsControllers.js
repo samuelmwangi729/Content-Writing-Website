@@ -24,7 +24,7 @@ const TakeProject = async (req,res)=>{
             }else{
             //then the order exists, else erturn an error message 
             order.Status='Awarded'
-            order.AwardedTo = user
+            order.AwardedTo = userEmail
             order.save()
             //send a refresh signal
             res.status(200).json({status:'success',message:'Congratulations, You took the project',refresh:true})
@@ -46,7 +46,7 @@ const TakeProject = async (req,res)=>{
 const Index = async (req,res)=>{
     //get all the projects that are active. 
     //For testing purposes, we will display all the projects alias orders
-    projects = await Order.find({Status:'Pending'})
+    projects = await Order.find({Status:'Online'})
     res.locals.moment = moment
     res.locals.countdown = countdown
     res.render('Backend/Projects/All.ejs',{projects:projects})
@@ -173,7 +173,6 @@ const DepositProject = async (req,res) =>{
     const userEmail = res.locals.user.email
     const projectExists = await Order.isExists(OrderID,userEmail)
     if(projectExists){
-        console.log('project exists')
         //initialize the payment method
         const project = await Order.findById(OrderID)
         //call the pay function and set the payment reason to the function 
@@ -234,7 +233,6 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
         });
         resp.on('end', async () => {
             const ed = JSON.parse(data)
-            console.log(ed)
             if(ed.status){
                 const initLog = await InitPay.create({
                     InitStatus:ed.status,
@@ -248,7 +246,6 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
                     PaymentType:PaymentType,
                     AmountPaid:Amount,
                 })
-                console.log(initLog)
                 if(initLog){
                     res.redirect(ed.data['authorization_url'])
                 }
@@ -267,7 +264,6 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
 }
 const getCallBackData = async (req,res)=>{
     const data = req.body
-    console.log(data)
     const stats = data.data
     let paymentStatus = stats.status //Our reference in the payment Initialized
     let paymentref = stats.reference
@@ -306,7 +302,6 @@ const getCallBackData = async (req,res)=>{
     })
     //then check if the amount paid is the same as the project amount 
     const initialPay = await InitPay.findOne({PaymentRef:paymentref})
-    console.log(initialPay)
     if(initialPay.AmountPaid ===paymentAmount ){
         //update the payment status
         const user = await User.findOne({email:initialPay.UserEmail})
@@ -327,4 +322,22 @@ const getCallBackData = async (req,res)=>{
 const RedirectAfterCallback = (req,res)=>{
     res.redirect('/MyOrders')
 }
-module.exports = {Index,createBid,SaveBid,TakeProject,ProjectsPayments,DepositProject,getCallBackData,RedirectAfterCallback}
+const getTakenProjects = async (req,res)=>{
+    const user = res.locals.user.email
+    //get all the projects that are online and also the status is paid and also the freelancer is you 
+    const takenProjects = await Order.find({Status:'Awarded',PaymentStatus:'Paid',AwardedTo:user})
+    res.status(201).render('Backend/Projects/Taken.ejs',{projects:takenProjects})
+}
+const GetProjectDetails = async(req,res)=>{
+    //get the request parameter from the body
+    const {ProjectID} = req.body
+    //check if the project exists
+    const projectExists = await Order.findById(ProjectID)
+    if(projectExists){
+        //return the project object
+        res.status(200).json({project:projectExists,status:'success',message:'Success'})
+    }else{
+        res.status(400).json({status:'error',message:'Unknown Error Occurred!! Please try again later'})
+    }
+}
+module.exports = {Index,createBid,SaveBid,TakeProject,GetProjectDetails,getTakenProjects,ProjectsPayments,DepositProject,getCallBackData,RedirectAfterCallback}
