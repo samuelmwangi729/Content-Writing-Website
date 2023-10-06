@@ -82,9 +82,11 @@
                                                             <span class="badge bg-danger" onclick="DeleteMembership('<%= item._id %>')">
                                                                 delete
                                                             </span>
-                                                            <span class="badge bg-success" onclick="ViewMembership('<%= item._id %>')">
-                                                                View
-                                                            </span>
+                                                            <% if(item.Benefits.length >0){ %>
+                                                                <span class="badge bg-success" id="viewButton" onclick="ViewMembership('<%= item._id %>')">
+                                                                    View
+                                                                </span>
+                                                            <% } %>
                                                         </td>
                                                     </tr>
                                                     <% }) %>
@@ -94,32 +96,25 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Launch demo modal
-            </button>
-            
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <div class="card card-md hidden" id="membershipCard">
+                        <div class="card-heading">
+                            <div style="display: flex;justify-content: space-evenly;">
+                                <span id="membershipTitle" class="badge badge-sm badge-warning"></span>
+                                <span id="membershipFees"></span>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="card-body">
+                            <ul class="text-left" id="membershipBenefits" style="list-style: disc;">
+                            </ul>
+                        </div>
+                        <hr>
+                        <div class="card-footer badge badge-sm bg-success"id="membershipStatus">
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-sm bg-success" id="closeMem" onclick="closeEverything()">Close</button>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                    ...
-                    </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
                 </div>
             </div>
         </div>
@@ -127,7 +122,17 @@
 </div>
 <%- include('../partials/scripts.ejs') %>
 <script>
+    const closeEverything = ()=>{
+        document.querySelector("#viewButton").classList.remove('hidden')
+        document.querySelector("#membershipCard").classList.add('hidden')
+    }
     const ViewMembership = async (id)=>{
+        document.querySelector("#viewButton").classList.add('hidden')
+        const memCard = document.querySelector("#membershipCard")
+        const Title = document.querySelector("span#membershipTitle")
+        const Fees = document.querySelector("#membershipFees")
+        const list = document.querySelector("#membershipBenefits")
+        const Status = document.querySelector("#membershipStatus")
         const res = await fetch("/Get/Details",{
             method:'post',
             body:JSON.stringify({MembershipID:id}),
@@ -136,7 +141,16 @@
             }
         })
         const dataBack  = await res.json()
-       alert('clicked')
+        Title.textContent = dataBack.data.Title
+        Fees.textContent = ` $ ${dataBack.data.SubscriptionFees}`
+        const benefits = dataBack.data.Benefits
+        benefits.forEach(benefit => {
+            let entry = document.createElement("li")
+            entry.appendChild(document.createTextNode(benefit))
+            list.appendChild(entry)
+        });
+        Status.textContent = dataBack.data.Status
+        memCard.classList.remove('hidden')
     }
     const DeleteMembership = async (id) =>{
     //    swal("Deleted")
