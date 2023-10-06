@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="card alert">
+                    <div class="card">
                         <div class="card-header">
                             <h4>Available Plans</h4>
                         </div>
@@ -82,6 +82,9 @@
                                                             <span class="badge bg-danger" onclick="DeleteMembership('<%= item._id %>')">
                                                                 delete
                                                             </span>
+                                                            <span class="badge bg-danger" onclick="ViewMembership('<%= item._id %>')">
+                                                                View
+                                                            </span>
                                                         </td>
                                                     </tr>
                                                     <% }) %>
@@ -93,11 +96,69 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#membershipModal">
+                Launch demo modal
+            </button>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="membershipModal" tabindex="-1" role="dialog" aria-labelledby="membershipModalTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-header">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span id="membershipTitle">
+                                        Basic
+                                    </span>
+                                    <span id="subscriptionFees"> $ 20</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="membershipContent" id="membershipContent">
+                                    content here
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span>Active</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 <%- include('../partials/scripts.ejs') %>
 <script>
+    const ViewMembership = async (id)=>{
+        const res = await fetch("/Get/Details",{
+            method:'post',
+            body:JSON.stringify({MembershipID:id}),
+            headers:{
+                "Content-Type":"application/json"
+            }
+        })
+        const dataBack  = await res.json()
+        var myModal = new bootstrap.Modal(document.getElementById('membershipModal'), {
+          keyboard: false
+        })
+        myModal.show()
+        // console.log(dataBack)
+    }
     const DeleteMembership = async (id) =>{
     //    swal("Deleted")
     const res = await fetch("/Delete/Membership",{
@@ -108,8 +169,8 @@
         }
     })
     const dataBack = await res.json()
-    if(dataBack.status ==='success'){
-        swal("Success", dataBack.message, "error");
+    if(dataBack.status =='success'){
+        swal("Success", dataBack.message, "success");
         setTimeout(()=>{
             location.reload()
         },3000)

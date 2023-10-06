@@ -24,7 +24,7 @@ const AddMembership = async (req,res)=>{
             bArray.push(benefit)
             membershipObj.Title = titleTrimed,
             membershipObj.Benefits =bArray
-            membershipObj.SubscriptionFees = fees
+            membershipObj.SubscriptionFees = fees?fees: membershipObj.SubscriptionFees
             membershipObj.updatedBy = user
             membershipObj.save()
             res.status(201).json({status:'success',message:`Membership Updated`})
@@ -53,4 +53,15 @@ const DeleteMembership = async (req,res) =>{
         res.status(400).json({status:'error',message:'Unknown Error Occurred',reload:false})
     }
 }
-module.exports={Index,AddMembership,DeleteMembership}
+const  getProjectDetails = async (req,res)=>{
+    const {MembershipID} = req.body
+    //check if the memberrship plan exists 
+    const membership = await Membership.findById(MembershipID)
+    if(membership){
+        //return the membership object with a success
+        res.status(201).json({status:'success',data:membership})
+    }else{
+        res.status(400).json({status:'error',data:[]})
+    }
+}
+module.exports={Index,AddMembership,getProjectDetails,DeleteMembership}
