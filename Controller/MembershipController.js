@@ -2,7 +2,8 @@ const {Membership} = require('../Models/Membership')
 const User = require('../Models/Users')
 const Index = async (req,res)=>{
     //set the membership plans
-    res.render('Backend/Memberships/Plans.ejs')
+    const memberships = await  Membership.find({Status:'Active'})
+    res.render('Backend/Memberships/Plans.ejs',{memberships:memberships})
 }
 
 const AddMembership = async (req,res)=>{
@@ -10,7 +11,6 @@ const AddMembership = async (req,res)=>{
     const {title,benefit,fees} = req.body
     //check if there is any membership with the title
     const titleTrimed = title.trim()
-    console.log(titleTrimed)
     const membershipObj = await Membership.findOne({Title:titleTrimed})
     //get the user with the user object 
     const user = await User.findOne({email:res.locals.user.email}) 
@@ -24,7 +24,7 @@ const AddMembership = async (req,res)=>{
             bArray.push(benefit)
             membershipObj.Title = titleTrimed,
             membershipObj.Benefits =bArray
-            membershipObj.SubscriptionFees = fees
+            membershipObj.SubscriptionFees = fees?fees: membershipObj.SubscriptionFees
             membershipObj.updatedBy = user
             membershipObj.save()
             res.status(201).json({status:'success',message:`Membership Updated`})
@@ -41,5 +41,27 @@ const AddMembership = async (req,res)=>{
         }
     }
 }
-
-module.exports={Index,AddMembership}
+const DeleteMembership = async (req,res) =>{
+    //get the data 
+    const {MembershipID} = req.body
+    //get the membership plan
+    const membershipObj = await Membership.findById(MembershipID)
+    if(membershipObj){
+        await Membership.findByIdAndDelete(MembershipID)
+        res.status(200).json({status:'success',message:'Successfully Deleted',reload:true})
+    }else{
+        res.status(400).json({status:'error',message:'Unknown Error Occurred',reload:false})
+    }
+}
+const  getProjectDetails = async (req,res)=>{
+    const {MembershipID} = req.body
+    //check if the memberrship plan exists 
+    const membership = await Membership.findById(MembershipID)
+    if(membership){
+        //return the membership object with a success
+        res.status(201).json({status:'success',data:membership})
+    }else{
+        res.status(400).json({status:'error',data:[]})
+    }
+}
+module.exports={Index,AddMembership,getProjectDetails,DeleteMembership}

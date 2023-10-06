@@ -305,7 +305,6 @@ const getCallBackData = async (req,res)=>{
 <<<<<<< HEAD
     const user = await User.findOne({email:initialPay.UserEmail})
     const project = await Order.findOne({_id:initialPay.OurRef,Client:user})
-    console.log(project)
     if(project){
         project.Status = "Online"
         project.PaymentStatus = "Paid"
