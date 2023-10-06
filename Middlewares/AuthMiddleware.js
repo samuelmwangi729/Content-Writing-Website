@@ -1,7 +1,11 @@
 const token = require('jsonwebtoken')
 const userModel = require('../Models/Users')
+const moment = require('moment')
+const countdown = require('moment-countdown');
 
 const checkAuth = (req,res,next)=>{
+    res.locals.moment = moment
+res.locals.countdown = countdown
     //first check if the token exists
     const uToken = req.cookies.jwt
     //confirm if the token is there 

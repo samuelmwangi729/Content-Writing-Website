@@ -24,7 +24,7 @@ const TakeProject = async (req,res)=>{
             }else{
             //then the order exists, else erturn an error message 
             order.Status='Awarded'
-            order.AwardedTo = user
+            order.AwardedTo = userEmail
             order.save()
             //send a refresh signal
             res.status(200).json({status:'success',message:'Congratulations, You took the project',refresh:true})
@@ -302,6 +302,7 @@ const getCallBackData = async (req,res)=>{
     })
     //then check if the amount paid is the same as the project amount 
     const initialPay = await InitPay.findOne({PaymentRef:paymentref})
+<<<<<<< HEAD
     const user = await User.findOne({email:initialPay.UserEmail})
     const project = await Order.findOne({_id:initialPay.OurRef,Client:user})
     console.log(project)
@@ -310,6 +311,19 @@ const getCallBackData = async (req,res)=>{
         project.PaymentStatus = "Paid"
         project.save()
         //done end
+=======
+    if(initialPay.AmountPaid ===paymentAmount ){
+        //update the payment status
+        const user = await User.findOne({email:initialPay.UserEmail})
+        const project = await Order.findOne({_id:initialPay.OurRef,Client:user})
+        if(project){
+            project.Status = "Online"
+            project.save()
+            //done end
+        }
+    }else{
+        //set the remaining amount to
+>>>>>>> TakenProjects
     }
     //check from the initialized table
     //if true, redirect to projects page 
@@ -319,4 +333,22 @@ const getCallBackData = async (req,res)=>{
 const RedirectAfterCallback = (req,res)=>{
     res.redirect('/MyOrders')
 }
-module.exports = {Index,createBid,SaveBid,TakeProject,ProjectsPayments,DepositProject,getCallBackData,RedirectAfterCallback}
+const getTakenProjects = async (req,res)=>{
+    const user = res.locals.user.email
+    //get all the projects that are online and also the status is paid and also the freelancer is you 
+    const takenProjects = await Order.find({Status:'Awarded',PaymentStatus:'Paid',AwardedTo:user})
+    res.status(201).render('Backend/Projects/Taken.ejs',{projects:takenProjects})
+}
+const GetProjectDetails = async(req,res)=>{
+    //get the request parameter from the body
+    const {ProjectID} = req.body
+    //check if the project exists
+    const projectExists = await Order.findById(ProjectID)
+    if(projectExists){
+        //return the project object
+        res.status(200).json({project:projectExists,status:'success',message:'Success'})
+    }else{
+        res.status(400).json({status:'error',message:'Unknown Error Occurred!! Please try again later'})
+    }
+}
+module.exports = {Index,createBid,SaveBid,TakeProject,GetProjectDetails,getTakenProjects,ProjectsPayments,DepositProject,getCallBackData,RedirectAfterCallback}
