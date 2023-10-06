@@ -302,7 +302,6 @@ const getCallBackData = async (req,res)=>{
     })
     //then check if the amount paid is the same as the project amount 
     const initialPay = await InitPay.findOne({PaymentRef:paymentref})
-<<<<<<< HEAD
     const user = await User.findOne({email:initialPay.UserEmail})
     const project = await Order.findOne({_id:initialPay.OurRef,Client:user})
     if(project){
@@ -310,19 +309,6 @@ const getCallBackData = async (req,res)=>{
         project.PaymentStatus = "Paid"
         project.save()
         //done end
-=======
-    if(initialPay.AmountPaid ===paymentAmount ){
-        //update the payment status
-        const user = await User.findOne({email:initialPay.UserEmail})
-        const project = await Order.findOne({_id:initialPay.OurRef,Client:user})
-        if(project){
-            project.Status = "Online"
-            project.save()
-            //done end
-        }
-    }else{
-        //set the remaining amount to
->>>>>>> TakenProjects
     }
     //check from the initialized table
     //if true, redirect to projects page 
