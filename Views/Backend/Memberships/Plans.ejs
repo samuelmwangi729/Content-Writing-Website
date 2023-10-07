@@ -125,6 +125,7 @@
     const closeEverything = ()=>{
         document.querySelector("#viewButton").classList.remove('hidden')
         document.querySelector("#membershipCard").classList.add('hidden')
+        location.reload()
     }
     const ViewMembership = async (id)=>{
         document.querySelector("#viewButton").classList.add('hidden')

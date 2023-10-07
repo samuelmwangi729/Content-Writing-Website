@@ -1,9 +1,11 @@
 const {Router} = require('express')
 const MembersRouter = Router()
 const {checkAuth,getUser} = require('../Middlewares/AuthMiddleware')
-const {Index,AddMembership,DeleteMembership,getProjectDetails} = require('../Controller/MembershipController')
+const {Index,AddMembership,DeleteMembership,getProjectDetails,MembershipSettings,MembershipSettingsPost} = require('../Controller/MembershipController')
 MembersRouter.get('/Memberships',checkAuth,getUser,Index)
 .post("/Post/Membership/Benefits",checkAuth,getUser,AddMembership)
 .post("/Delete/Membership",checkAuth,getUser,DeleteMembership)
 .post("/Get/Details",checkAuth,getUser, getProjectDetails)
+.get("/MembershipSettings",checkAuth,getUser,MembershipSettings)
+.post("/MembershipSettingsPost",checkAuth,getUser,MembershipSettingsPost)
 module.exports = MembersRouter

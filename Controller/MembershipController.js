@@ -1,4 +1,4 @@
-const {Membership} = require('../Models/Membership')
+const {Membership,MembersTakesBid} = require('../Models/Membership')
 const User = require('../Models/Users')
 const Index = async (req,res)=>{
     //set the membership plans
@@ -64,4 +64,22 @@ const  getProjectDetails = async (req,res)=>{
         res.status(400).json({status:'error',data:[]})
     }
 }
-module.exports={Index,AddMembership,getProjectDetails,DeleteMembership}
+const MembershipSettings = async(req,res)=>{
+    //get the memberships here
+    const memberships = await Membership.find({Status:'Active'})
+    res.status(200).render('Backend/Memberships/Settings.ejs',{memberships})
+}
+const MembershipSettingsPost = async(req,res)=>{
+    const {Title,Takes,Bids,Expires} = req.body
+    //get the profile membership here 
+    const membership = await Membership.findById(Title)
+     const expiryDate = new Date(new Date().getTime()+(Expires*24*60*60*1000))
+    const membersbid = await MembersTakesBid.create({
+        Title:Title,
+        Takes:Takes,
+        Bids:Bids,
+        RenewsAfter:expiryDate
+    })
+    console.log(membersbid)
+}
+module.exports={Index,AddMembership,getProjectDetails,MembershipSettingsPost,MembershipSettings,DeleteMembership}

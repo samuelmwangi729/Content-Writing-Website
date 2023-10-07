@@ -1,0 +1,141 @@
+<%- include('../partials/header.ejs') %>
+<body>
+<%- include('../partials/sidebar.ejs') %>
+<%- include('../partials/navbar.ejs') %>
+<div class="content-wrap">
+    <div class="main">
+        <div class="container-fluid">
+            <!-- content goes here  -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Membership Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert hidden" id="messageAlert">
+                                <strong id="alertStrong"></strong> <span id="alertMessage"></span>
+                            </div>
+                            <p class="text-muted m-b-15">
+                                Create Membership Settings
+                            </p>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <form id="membershipSettingsForm">
+                                        <div class="form-group">
+                                            <label for="Title"> <i class="ti ti-tag"></i> Membership Title</label>
+                                            <h6 class="d-block text-danger" id="membershipTitleError"></h6>
+                                            <select name="membershipTitle" id="membershipTitle" class="form-control">
+                                                <% if(memberships.length ===0){ %>
+                                                <option label="--Please Upload a Plan--"></option>
+                                                <% }else{ %>
+                                                    <option label="--Select Plan Here--"></option>
+                                                <% memberships.forEach((item)=>{ %>
+                                                    <option value="<%=item._id %>"><%= item.Title %></option>
+                                                    <% }) %>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Title"> <i class="ti ti-panel"></i> Takes</label>
+                                            <h6 class="d-block text-danger" id="membershipTakesError"></h6>
+                                            <input type="number" name="membershipTakes" id="membershipTakes" class="form-control text-white" style="color:white !important" placeholder="Enter the Number of Items One can Take">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Title"> <i class="ti ti-server"></i> Bids</label>
+                                            <h6 class="d-block text-danger" id="membershipBidsError"></h6>
+                                            <input type="number" name="membershipBids" id="membershipBids" class="form-control text-white" style="color:white !important" placeholder="Enter the Amount of Projects One can Bid On">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Title"> <i class="ti ti-calendar"></i> Expires in (Days)</label>
+                                            <h6 class="d-block text-danger" id="membershipExpiresError"></h6>
+                                            <input type="number" name="membershipExpires" id="membershipExpires" class="form-control text-white" style="color:white !important" placeholder="Enter the Days In Which the Plan expires">
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-outline btn-success btn-block">Add Settings</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                           <span>
+                            Available Membership Plans
+                           </span>
+                        </div>
+                        <div class="card-body">
+                            <table class="table-bordered table">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>Membership Title</th>
+                                        <th>Takes</th>
+                                        <th>Bids</th>
+                                        <th>Expiry Time</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Basic</td>
+                                        <td>30</td>
+                                        <td>50</td>
+                                        <td>4034</td>
+                                        <td>Delete</td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/scripts.ejs') %>
+</body>
+<script>
+    const form = document.querySelector("form#membershipSettingsForm")
+    form.addEventListener('submit',async (e)=>{
+        e.preventDefault()
+        document.querySelector("#membershipTitleError").textContent =""
+        document.querySelector("#membershipTakesError").textContent =""
+        document.querySelector("#membershipBidsError").textContent =""
+        document.querySelector("#membershipExpiresError").textContent =""
+        // alert('submitted')
+        const membershipTitle = document.querySelector("#membershipTitle").value
+        const membershipTakes = document.querySelector("#membershipTakes").value
+        const membershipBids = document.querySelector("#membershipBids").value
+        const membershipExpires = document.querySelector("#membershipExpires").value
+        if(!membershipTakes || membershipTakes==null){
+            document.querySelector("#membershipTakesError").textContent = "This field is required"
+        }
+        if(!membershipTitle || membershipTitle==null){
+            document.querySelector("#membershipTitleError").textContent = "The title is required"
+        }
+        if(!membershipBids || membershipBids==null){
+            document.querySelector("#membershipBidsError").textContent = "This field is required"
+        }
+        if(!membershipExpires || membershipExpires==null){
+            document.querySelector("#membershipExpiresError").textContent = "This Field is required"
+        }
+        if(membershipTitle&&membershipTakes&&membershipBids&&membershipExpires){
+           const res=await  fetch("/MembershipSettingsPost",{
+                method:'post',
+                body:JSON.stringify({
+                    Title:membershipTitle,
+                    Takes:membershipTakes,
+                    Bids:membershipBids,
+                    Expires:membershipExpires
+                }),
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            })
+            const dataBack = await res.json()
+            console.log(dataBack)
+        }
+    })
+</script>
+</html> 
