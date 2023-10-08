@@ -13,7 +13,7 @@
                             <h4>Membership Plans</h4>
                         </div>
                         <div class="card-body">
-                            <div class="alert hidden" id="messageAlert">
+                            <div class="alert hidden text-white" id="messageAlert">
                                 <strong id="alertStrong"></strong> <span id="alertMessage"></span>
                             </div>
                             <p class="text-muted m-b-15">
@@ -217,12 +217,12 @@
            form.reset()
            if(dataBack.success){
             document.querySelector("#messageAlert").classList.remove("hidden")
-            document.querySelector("#messageAlert").classList.add("alert-success")
+            document.querySelector("#messageAlert").classList.add("bg-success")
             document.querySelector("#alertStrong").textContent = dataBack.success
             document.querySelector("#alertMessage").textContent = dataBack.message
            }else{
             document.querySelector("#messageAlert").classList.remove("hidden")
-            document.querySelector("#messageAlert").classList.add("alert-success")
+            document.querySelector("#messageAlert").classList.add("bg-danger")
             document.querySelector("#alertStrong").textContent = dataBack.success
             document.querySelector("#alertMessage").textContent = dataBack.message
            }

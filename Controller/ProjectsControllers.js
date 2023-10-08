@@ -6,6 +6,7 @@ const User = require('../Models/Users')
 const Bid = require('../Models/Bids')
 const moment = require('moment')
 const countdown = require('moment-countdown');
+const {Membership,MembersTakesBid,userMembershipTracker} = require('../Models/Membership')
 require('dotenv').config();
 const express = require('express')
 const https = require('https');
@@ -302,21 +303,57 @@ const getCallBackData = async (req,res)=>{
     })
     //then check if the amount paid is the same as the project amount 
     const initialPay = await InitPay.findOne({PaymentRef:paymentref})
+    // console.log(initialPay)
     const user = await User.findOne({email:initialPay.UserEmail})
-    const project = await Order.findOne({_id:initialPay.OurRef,Client:user})
-    if(project){
-        project.Status = "Online"
-        project.PaymentStatus = "Paid"
-        project.save()
-        //done end
+    //check if the reason is Membership or Project payment. If its profile, then
+    if(initialPay.PaymentType=="Membership"){
+        //update the membership profile
+        const membership = await Membership.findOne({Title:initialPay.OurRef})
+        if(membership){
+            //get the bids and takes 
+            const {Title,Takes,Bids,RenewsAfter} = await MembersTakesBid.findOne({Title:initialPay.OurRef})
+            //use renews after for calculations
+            const expiryDate = new Date(new Date().getTime()+(RenewsAfter*24*60*60*1000))
+            let currentMonth = expiryDate.getMonth() +1
+            let currentDay = expiryDate.getDate()
+            if(currentMonth===2 && currentDay>28){
+                //set the date to the current time but on date 28th feb 
+                expiryDate.setDate(28)
+            }
+            const ptracker = await userMembershipTracker.create({
+                userEmail:user.email,
+                membershipTitle:Title,
+                Takes:Takes,
+                Bids:Bids,
+                ExpiresOn:expiryDate
+            })
+            if(ptracker){
+                const payment = await Payments.findOne({
+                        paymentref:paymentref,
+                })
+                payment.Status = 'Used'
+                payment.save()
+                res.json({Data:'Payment Success'})
+            }else{
+                res.json({Data:'Payment Not'})
+            }
+        }
     }
-    //check from the initialized table
-    //if true, redirect to projects page 
-    //else, go back with an error message
-    res.json({data})
+    else{
+        const project = await Order.findOne({_id:initialPay.OurRef,Client:user})
+        if(project){
+            project.Status = "Online"
+            project.PaymentStatus = "Paid"
+            project.save()
+        }
+        //check from the initialized table
+        //if true, redirect to projects page 
+        //else, go back with an error message
+        res.json({data})
+    }
 }
 const RedirectAfterCallback = (req,res)=>{
-    res.redirect('/MyOrders')
+    res.redirect('/Dashboard')
 }
 const getTakenProjects = async (req,res)=>{
     const user = res.locals.user.email

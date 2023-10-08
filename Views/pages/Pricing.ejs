@@ -10,60 +10,30 @@
               <h2 class="sec-title">Our Best Price For You</h2>
            </div>
            <div class="row gy-30 justify-content-center">
-              <div class="col-xl-4 col-md-6">
-                 <div class="price-card2" data-theme-color="" data-body-color="#AED139">
-                    <h3 class="price-card2_title box-title">Basic Plan</h3>
-                    <div class="price-card2_price"><span class="price"><span class="currency">$</span>50<span class="duration">/Per Month</span></span></div>
-                    <div class="price-card2_img"><img src="assets/img/update1/shape/color_11.png" alt="image"></div>
-                    <div class="available-list">
-                       <ul>
-                          <li>10 Hours/day Learning</li>
-                          <li>Outdoor Activities</li>
-                          <li>Knowledge Learning</li>
-                          <li class="unavailable">School Bus Service</li>
-                          <li class="unavailable">Cafeteria: Breakfast, Lunch</li>
-                          <li class="unavailable">Sport Games Training</li>
-                       </ul>
-                    </div>
-                    <a href="contact.html" class="th-btn">Choose Plan<i class="fas fa-long-arrow-right ms-2"></i></a>
-                 </div>
-              </div>
-              <div class="col-xl-4 col-md-6">
-                 <div class="price-card2" data-theme-color="#786ACF" data-body-color="#fe5a86">
-                    <h3 class="price-card2_title box-title">Standard Plan</h3>
-                    <div class="price-card2_price"><span class="price"><span class="currency">$</span>70<span class="duration">/Per Month</span></span></div>
-                    <div class="price-card2_img"><img src="assets/img/update1/shape/color_11.png" alt="image"></div>
-                    <div class="available-list">
-                       <ul>
-                          <li>10 Hours/day Learning</li>
-                          <li>Outdoor Activities</li>
-                          <li>Knowledge Learning</li>
-                          <li>School Bus Service</li>
-                          <li class="unavailable">Cafeteria: Breakfast, Lunch</li>
-                          <li class="unavailable">Sport Games Training</li>
-                       </ul>
-                    </div>
-                    <a href="contact.html" class="th-btn">Choose Plan<i class="fas fa-long-arrow-right ms-2"></i></a>
-                 </div>
-              </div>
-              <div class="col-xl-4 col-md-6">
-                 <div class="price-card2" data-theme-color="#fe5a86" data-body-color="#786ACF">
-                    <h3 class="price-card2_title box-title">Premium Plan</h3>
-                    <div class="price-card2_price"><span class="price"><span class="currency">$</span>120<span class="duration">/Per Month</span></span></div>
-                    <div class="price-card2_img"><img src="assets/img/update1/shape/color_11.png" alt="image"></div>
-                    <div class="available-list">
-                       <ul>
-                          <li>10 Hours/day Learning</li>
-                          <li>Outdoor Activities</li>
-                          <li>Knowledge Learning</li>
-                          <li>School Bus Service</li>
-                          <li>Cafeteria: Breakfast, Lunch</li>
-                          <li>Sport Games Training</li>
-                       </ul>
-                    </div>
-                    <a href="contact.html" class="th-btn">Choose Plan<i class="fas fa-long-arrow-right ms-2"></i></a>
-                 </div>
-              </div>
+            <% if(memberships.length === 0) { %>
+               <div class="col-xl-12 col-md-12">
+                  <div class="alert bg-danger text-white text-center">
+                     No Plans Available for Now
+                  </div>
+               </div>
+            <% }else { %>
+               <% memberships.forEach((item)=>{ %>
+                  <div class="col-xl-4 col-md-6">
+                     <div class="price-card2" data-theme-color="" data-body-color="deeppink">
+                        <h3 class="price-card2_title box-title"><%= item.Title %> Plan</h3>
+                        <div class="price-card2_price"><span class="price"><span class="currency">$</span><%= item.SubscriptionFees %><span class="duration">/Per Month</span></span></div>
+                        <div class="available-list">
+                           <ul>
+                              <% item.Benefits.forEach((obj)=>{ %>
+                                 <li><%= obj %></li>
+                              <% }) %>
+                           </ul>
+                        </div>
+                        <a href="/Subscribe?Plan=<%= item.Title %>" class="th-btn">Choose Plan<i class="fas fa-long-arrow-right ms-2"></i></a>
+                     </div>
+                  </div>
+               <% }) %>
+            <% } %>
            </div>
         </div>
      </section>

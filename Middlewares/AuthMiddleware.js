@@ -2,25 +2,33 @@ const token = require('jsonwebtoken')
 const userModel = require('../Models/Users')
 const moment = require('moment')
 const countdown = require('moment-countdown');
+const url =  require('url')
 
 const checkAuth = (req,res,next)=>{
     res.locals.moment = moment
 res.locals.countdown = countdown
     //first check if the token exists
     const uToken = req.cookies.jwt
+   
     //confirm if the token is there 
     if(req.cookies.jwt){
         //then verify the token
         token.verify(uToken,'P!@#four5sam',(err,dToken)=>{
             if(err){
                 //then the token is not valid
+                //if there is a path , redirect to the path 
+                //else to dashboard 
                 res.redirect("/")
             }else{
-                //the token is valid 
                 next()
+                //the token is valid 
             }
         })
     }else{
+        const {path} = url.parse(req.url,true)
+        res.locals.path = path
+        res.cookie('path',path,{httpOnly:true,maxAge:1*24*60*60*1000})
+        console.log(req.cookies.path)
         res.redirect('/Login')
     }
 }

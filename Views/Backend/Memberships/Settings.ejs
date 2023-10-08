@@ -68,22 +68,42 @@
                            </span>
                         </div>
                         <div class="card-body">
+                            <div class="alert bg-danger hidden" id="messageDanger">
+                                <strong id="alertTitle"></strong> <span id="MessageBack"></span>
+                            </div>
                             <table class="table-bordered table">
                                 <thead>
                                     <tr class="text-center">
-                                        <th>Membership Title</th>
+                                        <th>Plan</th>
                                         <th>Takes</th>
                                         <th>Bids</th>
                                         <th>Expiry Time</th>
                                         <th>Actions</th>
                                     </tr>
-                                    <tr>
-                                        <td>Basic</td>
-                                        <td>30</td>
-                                        <td>50</td>
-                                        <td>4034</td>
-                                        <td>Delete</td>
-                                    </tr>
+                                    <% if(settingsMembers.length === 0){ %>
+                                        <tr>
+                                            <td colspan="5">
+                                                <div class="alert bg-danger">
+                                                    <strong>Sorry</strong> <span>No Settings exists. Please Create Some</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }else{ %>
+                                        <% settingsMembers.forEach((item)=>{ %>
+                                            <tr class="text-center">
+                                                <td>
+                                                    <span class="badge bg-warning badge-sm"><%= item.Title %></span>
+                                                </td>
+                                                <td><%= item.Takes %></td>
+                                                <td><%= item.Bids %></td>
+                                                <td><%= item.RenewsAfter %> Days</td>
+                                                
+                                                <td>
+                                                    <span class="badge badge-sm bg-danger" onclick="DeletePlan('<%= item._id %>')">Delete</span>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } %>
                                 </thead>
                             </table>
                         </div>
@@ -95,6 +115,24 @@
 </div>
 <%- include('../partials/scripts.ejs') %>
 </body>
+<script>
+    const DeletePlan = async(id)=>{
+        const res = await fetch("/Delete/Plan",{
+            method:'post',
+            body:JSON.stringify({PlanID:id}),
+            headers:{
+                "Content-Type":"application/json"
+            }
+        })
+        const dataBack = await res.json()
+        document.querySelector("div#messageDanger").classList.remove('hidden')
+        document.querySelector("#alertTitle").textContent=dataBack.Title
+        document.querySelector("#MessageBack").textContent=dataBack.Message
+        setTimeout(()=>{
+            location.reload()
+        },2000)
+    }
+</script>
 <script>
     const form = document.querySelector("form#membershipSettingsForm")
     form.addEventListener('submit',async (e)=>{
@@ -134,7 +172,20 @@
                 }
             })
             const dataBack = await res.json()
-            console.log(dataBack)
+            if(dataBack){
+                document.querySelector("div#messageAlert").classList.remove("hidden")
+                if(dataBack.status=='success'){
+                    document.querySelector("div#messageAlert").classList.add("bg-success")
+                }else{
+                    document.querySelector("div#messageAlert").classList.add("bg-danger")
+                }
+                document.querySelector("#alertStrong").textContent = dataBack.status
+                document.querySelector("#alertMessage").textContent = dataBack.message
+                setTimeout(()=>{
+                    location.reload()
+                },3000)
+            }
+
         }
     })
 </script>

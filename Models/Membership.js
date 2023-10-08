@@ -33,9 +33,8 @@ const Membership = model('Membership',MembershipSchema)
 //create the membership takes and bids 
 const MembersTakesBidSchema = new Schema({
     Title:{
-        type:Schema.Types.ObjectId,
-        ref:Membership,
-        default:'Basic'
+        type:String,
+        default:''
     },
     Takes:{
         type:Number,
@@ -47,20 +46,25 @@ const MembersTakesBidSchema = new Schema({
     },
     //they renew after 1 month automatically
     RenewsAfter:{
-        type:Number,
-        default:1
+        type:String,
+        default:new Date(new Date().getTime() + 30*24*60*60)
+    },
+    Status:{
+        type:String,
+        enum:['Active','Suspended'],
+        default:'Active'
     }
 },{timestamps:true})
 //create where you will be monitoring user's bids and takes 
 const userMembershipTrackerSchema = new Schema({
-    userID:{
-        type:Schema.Types.ObjectId,
-        ref:User
+    userEmail:{
+        type:String,
+        default:'',
+        required:['true','User email is required']
     },
-    membershipID:{
-        type:Schema.Types.ObjectId,
-        ref:Membership,
-        default:'Basic'
+    membershipTitle:{
+        type:String,
+        required:[true,'This field is required']
     },
     Takes:{
         type:Number,
@@ -69,8 +73,17 @@ const userMembershipTrackerSchema = new Schema({
     Bids:{
         type:Number,
         default:0
+    },
+    ExpiresOn:{
+        type:String,
+        required:[true,'This field is required']
+    },
+    Status:{
+        type:String,
+        enum:['Active','Expired'],
+        default:'Active'
     }
-})
+},{timestamps:true})
 //compile to models 
 const MembersTakesBid = model('MembersTakesBids',MembersTakesBidSchema)
 const userMembershipTracker = model('userMembershipTracker',userMembershipTrackerSchema)

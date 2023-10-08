@@ -2,6 +2,9 @@ const userModel = require('../Models/Users')
 const token = require('jsonwebtoken')
 const geoip = require('geoip-lite')
 const LoginLog = require('../Models/LoginSessions')
+const url = require('url')
+const {Membership} = require('../Models/Membership')
+const InitiatePay = require('../Utils/Payments/Payments')
 let title = ''
 let errors=[]
 //the index page 
@@ -17,9 +20,10 @@ const Services = (req,res)=>{
     title="Our Services"
     res.render('pages/Services.ejs',{title:title})
 }
-const Pricing = (req,res)=>{
+const Pricing = async (req,res)=>{
     title='Our Pricing Policy'
-    res.render('pages/Pricing.ejs',{title:title})
+    const membership = await Membership.find({Status:'Active'})
+    res.render('pages/Pricing.ejs',{title:title,memberships:membership})
 }
 const Portfolio = (req,res)=>{
     title='Our Portfolio'
@@ -145,7 +149,12 @@ const LoginUser= async (req,res)=>{
     //load the json body here 
     let errors=[]
     let data={}
+    let path="/Dashboard"
+    if(req.cookies.path){
+        path =req.cookies.path
+    }
     const {userEmail,password} = req.body
+    console.log(path,req.body)
     //check if the username and the passwords are keyed in
     if(userEmail==""){
         data ={
@@ -174,7 +183,7 @@ const LoginUser= async (req,res)=>{
             const userToken = generateJwt(userId)
             res.cookie('jwt',userToken,{httpOnly:true,maxAge:3*24*60*60*1000})
             //save the details to the database with the username,ip address, device and timestamp
-            res.status(200).json({'login':'success'})
+            res.status(200).json({'login':'success',path:path})
         }else{
             res.json({'login':'Invalid Details Submitted'})
         }
@@ -210,8 +219,14 @@ const LogUser = async (ipAddress,platform,email) =>{
     
 } 
 const Dashboard =(req,res)=>{
-    title="Dashboard"
-    res.render('Dashboard.ejs',{title:title})
+    if(req.cookies.path){
+        let path=req.cookies.path
+        res.cookie('path','',{maxAge:1})
+        res.redirect(path)
+    }else{
+        title="Dashboard"
+        res.render('Dashboard.ejs',{title:title})
+    }
 }
 
 const Logout = (req,res)=>{
@@ -219,4 +234,19 @@ const Logout = (req,res)=>{
     res.cookie('jwt','',{maxAge:1})
     res.redirect('/Login')
 }
-module.exports = {Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser,Dashboard,Logout}
+const Subscribe = async (req,res)=>{
+    const {query} = url.parse(req.url,true)
+    const Plan = query.Plan
+    //check the membership plan from the db with such title
+    const membership = await Membership.findOne({Title:Plan})
+    const userEmail = res.locals.user.email
+    if(membership){
+        console.log(membership)
+        const Amt = membership.SubscriptionFees
+        //you can now pay
+        await InitiatePay(res,Plan,"Membership","Payment For Membership Plan",Amt,userEmail)
+    }else{
+        res.json({data:"Error"})
+    }
+}
+module.exports = {Subscribe,Index,About,Services,Pricing,Portfolio,FAQ,Blog,Contact,Register,Login,Reset,RegisterUser,LoginUser,Dashboard,Logout}

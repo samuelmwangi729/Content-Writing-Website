@@ -82,6 +82,11 @@ const PaymentSchema = Schema({
         default:'',
         required:[true,' This paidAt field is required']
     },
+    Status:{
+        type:String,
+        enum:['Used','Not Used'],
+        default:'Not Used'
+    }
 },{timestamps:true})
 
 const Payments = model('Payments',PaymentSchema)

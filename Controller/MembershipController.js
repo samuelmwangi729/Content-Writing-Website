@@ -67,19 +67,57 @@ const  getProjectDetails = async (req,res)=>{
 const MembershipSettings = async(req,res)=>{
     //get the memberships here
     const memberships = await Membership.find({Status:'Active'})
-    res.status(200).render('Backend/Memberships/Settings.ejs',{memberships})
+    const settingsMembers = await MembersTakesBid.find({Status:'Active'})
+    res.status(200).render('Backend/Memberships/Settings.ejs',{memberships:memberships,settingsMembers:settingsMembers})
 }
 const MembershipSettingsPost = async(req,res)=>{
     const {Title,Takes,Bids,Expires} = req.body
     //get the profile membership here 
     const membership = await Membership.findById(Title)
-     const expiryDate = new Date(new Date().getTime()+(Expires*24*60*60*1000))
-    const membersbid = await MembersTakesBid.create({
-        Title:Title,
-        Takes:Takes,
-        Bids:Bids,
-        RenewsAfter:expiryDate
-    })
-    console.log(membersbid)
+    //the expiry date is for the new memberships
+     
+     //check if the bid exists
+     const bidsettingsexists = await MembersTakesBid.findOne({Title:membership.Title})
+     if(bidsettingsexists){
+        //update the existing values
+        bidsettingsexists.Title = membership.Title
+        bidsettingsexists.Takes = Takes
+        bidsettingsexists.Bids = Bids
+        bidsettingsexists.RenewsAfter = Expires
+        bidsettingsexists.save()
+        statusCode=200
+        statusMsg="success"
+        message="Settings Successfully Updated"
+     }else{
+        const membersbidsettings = await MembersTakesBid.create({
+            Title:membership.Title,
+            Takes:Takes,
+            Bids:Bids,
+            RenewsAfter:Expires
+        })
+        if(membersbidsettings){
+            statusCode=201
+            statusMsg="success"
+            message="Settings Successfully Created"
+        }else{
+            statusCode=400
+            statusMsg="error"
+            message="Unknown Error Occured"
+        }
+     }
+     res.status(statusCode).json({status:statusMsg,message:message})
 }
-module.exports={Index,AddMembership,getProjectDetails,MembershipSettingsPost,MembershipSettings,DeleteMembership}
+const DeletePlan = async(req,res)=>{
+    //check the items here
+    const {PlanID} = req.body
+    //check if the plan exists 
+    const plan = await MembersTakesBid.findById(PlanID)
+    console.log(plan)
+    if(plan){
+        plan.deleteOne()
+        res.status(201).json({Title:'success',Message:'Plan Successfully Deleted'})
+    }else{
+        res.status(400).json({Title:'error',Message:'An error Occurred'})
+    }
+}
+module.exports={Index,DeletePlan,AddMembership,getProjectDetails,MembershipSettingsPost,MembershipSettings,DeleteMembership}
