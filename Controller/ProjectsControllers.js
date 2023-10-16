@@ -27,6 +27,7 @@ const TakeProject = async (req,res)=>{
             order.Status='Awarded'
             order.AwardedTo = userEmail
             order.save()
+            await UpdateObj('Take',order.Proposals,user.email)
             //send a refresh signal
             res.status(200).json({status:'success',message:'Congratulations, You took the project',refresh:true})
             }
@@ -76,9 +77,9 @@ const SaveBid = async (req,res)=>{
     //check if the project exists
     //display the user who just placed the bid
     const user = await User.findOne({email:res.locals.user.email})
+    const project = await Order.findById(projectID)
     //check if the project exists 
     try{
-        const project = await Order.findById(projectID)
         if(user){
             try{
                 //check if a bid with the project id and userid exists 
@@ -86,6 +87,7 @@ const SaveBid = async (req,res)=>{
                 if(bidExists){
                     res.status(400).json({status:'error',message:'You had already Placed your bid On this Project'})
                 }else{
+
                     //create the bid
                     const bid =  await Bid.create({
                         ProjectID:project,
@@ -95,6 +97,11 @@ const SaveBid = async (req,res)=>{
                         Freelancer:user,
                     })
                     if(bid){
+                        //if bidding is done, then update the userMembershipTracker set bid to bid-1
+                        //get the user email and then check  the bids
+                        const userEmail = user.email
+                        //update the bids, if it is takes, then update the takes 
+                        await UpdateObj('Bid',project.Proposals,user.email)
                         res.status(201).json({status:'success',message:'Bid successfully Placed'})
                     }
                 }
@@ -110,6 +117,23 @@ const SaveBid = async (req,res)=>{
         //if the project does not exist, return to projects page 
         res.status(400).json({status:'error',message:'Bad Request. Try Again Later'})
 
+    }
+}
+const UpdateObj = async (Type,Project,email)=>{
+    //get the membership tracker object
+    let userMembershipTrackerObj= await userMembershipTracker.findOne({userEmail:email,Status:'Active'})
+    if(Type ==='Bid'){
+        let existingBids =  userMembershipTrackerObj.Bids
+        userMembershipTrackerObj.Bids = existingBids - Project
+    }else{
+        let existingTakes =  userMembershipTrackerObj.Takes
+        userMembershipTrackerObj.Takes = existingTakes - 1
+    }
+    userMembershipTrackerObj.save()
+    if(userMembershipTrackerObj){
+        return true
+    }else{
+        return false
     }
 }
 const ProjectsPayments = async (req, res)=>{
@@ -320,6 +344,8 @@ const getCallBackData = async (req,res)=>{
                 //set the date to the current time but on date 28th feb 
                 expiryDate.setDate(28)
             }
+            //update the membership tracker here with the bids and the takes one ought to get
+            //after bidding and taking the project, the bids and takes are updated here
             const ptracker = await userMembershipTracker.create({
                 userEmail:user.email,
                 membershipTitle:Title,
