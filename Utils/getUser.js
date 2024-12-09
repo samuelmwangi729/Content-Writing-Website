@@ -6,7 +6,7 @@ getUser = async (req,res,next)=>{
     //confirm if the token is there 
     if(uToken){
         //then verify the token
-         token.verify(uToken,'P!@#four5sam',async (err,dToken)=>{
+         token.verify(uToken,'',async (err,dToken)=>{
             if(err){
                 return null;
             }else{
