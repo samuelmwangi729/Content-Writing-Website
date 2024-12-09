@@ -46,5 +46,3 @@ const LoginSchema = mongoose.Schema({
 
 const LoginLog = mongoose.model('LoginLog',LoginSchema)
 module.exports = LoginLog
-// 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
-// account id 910954
