@@ -13,7 +13,7 @@ res.locals.countdown = countdown
     //confirm if the token is there 
     if(req.cookies.jwt){
         //then verify the token
-        token.verify(uToken,'P!@#four5sam',(err,dToken)=>{
+        token.verify(uToken,'',(err,dToken)=>{
             if(err){
                 //then the token is not valid
                 //if there is a path , redirect to the path 
