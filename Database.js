@@ -14,4 +14,3 @@ const connDb = async ()=>{
     }
 }
 module.exports=connDb
-//EhyZRGkz4QD60J9Z
